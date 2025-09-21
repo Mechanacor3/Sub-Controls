@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Nautical Puzzle Hub</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header onclick="toggleDevTools()">
+    🧭 Nautical Puzzle Hub
+  </header>
+  <nav>
+    <div id="keyword-banner"></div>
+    <button class="tab" data-target="mastermind">⚓ Mastermind Code</button>
+    <button class="tab" data-target="spot-diff">🔍 Porthole Puzzle</button>
+    <button class="tab" data-target="ballast">⚖️ Ballast Balance</button>
+    <button class="tab" data-target="sonar">📡 Sonar Shapes</button>
+    <button class="tab" data-target="navigation">🗺️ Nav Riddle</button>
+  </nav>
+
+  <div id="dev-tools">
+    <strong>🛠️ Dev Tools</strong>
+    <button onclick="resetGame()">🔄 Reset Puzzle</button>
+    <button onclick="revealSolution()">👁️ Reveal Code</button>
+    <div id="dev-output"></div>
+  </div>
+
+  <section id="mastermind" class="active">
+    <div class="content-box" id="puzzle-box">
+      <h2>⚓ Mastermind Code</h2>
+      <p>Guess the hidden 4-color signal used by the submarine crew to unlock the vault. You have 10 tries to break the code!</p>
+      <div class="board" id="board"></div>
+      <div class="color-picker" id="color-picker"></div>
+    </div>
+  </section>
+
+  <script src="mastermind.js"></script>
+</body>
+</html>
