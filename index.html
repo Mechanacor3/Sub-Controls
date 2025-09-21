@@ -36,9 +36,64 @@
   </section>
 
   <section id="spot-diff">
-    <div class="content-box placeholder">
-      <h2>🔍 Porthole Puzzle</h2>
-      <p>The porthole display is still calibrating. Check back soon for this challenge.</p>
+    <div class="content-box">
+      <div class="porthole-puzzle">
+        <div class="porthole-intro">
+          <h2>🔍 Porthole Puzzle</h2>
+          <p>
+            Two observation windows show the sea outside the submarine. Study the port and starboard scenes,
+            then tap every mismatch to flag it for the crew.
+          </p>
+        </div>
+        <div class="porthole-scenes">
+          <div class="porthole-scene" data-scene="port">
+            <div class="porthole-frame">
+              <div class="porthole-glass" role="img" aria-label="Port observation porthole">
+                <div class="scene-detail hull"></div>
+                <div class="scene-detail tower"></div>
+                <div class="scene-detail viewport viewport-a"></div>
+                <div class="scene-detail viewport viewport-b"></div>
+                <div class="scene-detail viewport viewport-c"></div>
+                <div class="scene-detail buoy"></div>
+                <div class="scene-detail kelp kelp-port"></div>
+                <div class="scene-detail kelp kelp-starboard"></div>
+                <div class="scene-detail jellyfish"></div>
+                <div class="scene-detail sonar"></div>
+                <div class="scene-detail bubbles cluster-one"></div>
+                <div class="scene-detail bubbles cluster-two"></div>
+              </div>
+            </div>
+            <div class="porthole-label">Port Observation</div>
+          </div>
+          <div class="porthole-scene" data-scene="starboard">
+            <div class="porthole-frame">
+              <div class="porthole-glass" role="img" aria-label="Starboard observation porthole">
+                <div class="scene-detail hull"></div>
+                <div class="scene-detail tower"></div>
+                <div class="scene-detail viewport viewport-a"></div>
+                <div class="scene-detail viewport viewport-b"></div>
+                <div class="scene-detail viewport viewport-c"></div>
+                <div class="scene-detail buoy"></div>
+                <div class="scene-detail kelp kelp-port"></div>
+                <div class="scene-detail kelp kelp-starboard"></div>
+                <div class="scene-detail jellyfish"></div>
+                <div class="scene-detail sonar"></div>
+                <div class="scene-detail bubbles cluster-one"></div>
+                <div class="scene-detail bubbles cluster-two"></div>
+              </div>
+            </div>
+            <div class="porthole-label">Starboard Observation</div>
+          </div>
+        </div>
+        <div class="porthole-progress" role="status" aria-live="polite">
+          Found <span id="porthole-found-count">0</span> of <span id="porthole-total-count">0</span> differences ·
+          <span class="porthole-progress-message" id="porthole-progress-message">Mark each mismatch to light the signal.</span>
+        </div>
+        <div class="porthole-success" id="porthole-success" aria-live="assertive">
+          <p>All differences spotted! Keyword:</p>
+          <p class="porthole-keyword" id="porthole-keyword"></p>
+        </div>
+      </div>
     </div>
   </section>
 
@@ -123,9 +178,21 @@
   </section>
 
   <section id="sonar">
-    <div class="content-box placeholder">
-      <h2>📡 Sonar Shapes</h2>
-      <p>Sonar arrays are aligning. Puzzle upload pending.</p>
+    <div class="content-box">
+      <div class="sonar-console">
+        <div>
+          <h2>📡 Sonar Shapes</h2>
+          <p class="sonar-description">
+            Cycle the pings to trace the contact silhouette. The row and column readouts show how many sonar pips should glow in
+            each line—overcharge a lane and the console will refuse the input.
+          </p>
+        </div>
+        <div class="sonar-grid" id="sonar-grid" role="grid" aria-label="Sonar targeting grid"></div>
+        <p class="sonar-clue" id="sonar-clue"></p>
+        <div class="sonar-success" id="sonar-success" hidden>
+          <strong>Keyword detected:</strong> <span id="sonar-keyword">TORPEDO</span>
+        </div>
+      </div>
     </div>
   </section>
 
@@ -206,11 +273,13 @@
     </div>
   </section>
 
+  <script src="sonar.js"></script>
   <script src="utils.js"></script>
   <script src="navigation.js"></script>
   <script src="control-unlock.js"></script>
+  <script src="porthole.js"></script>
   <script src="ballast.js"></script>
   <script src="spot-diff.js"></script>
-  <script src="sonar.js"></script>
+  <script src="navigation.js"></script>
 </body>
 </html>

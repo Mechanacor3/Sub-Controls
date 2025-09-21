@@ -75,6 +75,432 @@ section.active {
   color: rgba(202, 240, 248, 0.7);
 }
 
+.porthole-puzzle {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.porthole-intro h2 {
+  margin-bottom: 0.5rem;
+}
+
+.porthole-intro p {
+  margin: 0;
+  color: rgba(202, 240, 248, 0.85);
+}
+
+.porthole-scenes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+  justify-content: center;
+}
+
+.porthole-scene {
+  flex: 1 1 240px;
+  max-width: 320px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.porthole-frame {
+  width: 100%;
+  padding: 0.85rem;
+  border-radius: 50%;
+  background: linear-gradient(145deg, rgba(0, 36, 82, 0.9), rgba(0, 119, 182, 0.45));
+  box-shadow: 0 0 18px rgba(0, 119, 182, 0.45);
+  position: relative;
+}
+
+.porthole-frame::before {
+  content: '';
+  position: absolute;
+  inset: 0.5rem;
+  border-radius: 50%;
+  border: 2px solid rgba(72, 202, 228, 0.25);
+  pointer-events: none;
+}
+
+.porthole-glass {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  border-radius: 50%;
+  overflow: hidden;
+  border: 4px solid rgba(144, 224, 239, 0.45);
+  background: radial-gradient(circle at 25% 20%, rgba(144, 224, 239, 0.55), rgba(3, 4, 94, 0.9));
+  box-shadow: inset 0 0 30px rgba(1, 22, 39, 0.85), 0 0 18px rgba(72, 202, 228, 0.3);
+}
+
+.porthole-glass::after {
+  content: '';
+  position: absolute;
+  inset: 12%;
+  border-radius: 50%;
+  background: radial-gradient(circle at 20% 20%, rgba(255, 255, 255, 0.12), transparent 65%);
+  pointer-events: none;
+}
+
+.porthole-label {
+  text-transform: uppercase;
+  letter-spacing: 0.08rem;
+  font-size: 0.95rem;
+  color: #90e0ef;
+}
+
+.porthole-glass .scene-detail {
+  position: absolute;
+}
+
+.porthole-glass .scene-detail.hull {
+  width: 76%;
+  height: 40%;
+  left: 50%;
+  bottom: 12%;
+  transform: translateX(-50%);
+  background: linear-gradient(180deg, rgba(3, 4, 94, 0.75), rgba(1, 22, 39, 0.95));
+  border-radius: 45% 45% 50% 50%;
+  border: 2px solid rgba(0, 36, 82, 0.85);
+  box-shadow: 0 0 18px rgba(0, 36, 82, 0.6);
+}
+
+.porthole-glass .scene-detail.tower {
+  width: 22%;
+  height: 26%;
+  left: 50%;
+  bottom: 48%;
+  transform: translateX(-50%);
+  background: linear-gradient(180deg, rgba(144, 224, 239, 0.9), rgba(0, 96, 150, 0.6));
+  border-radius: 45% 45% 8% 8%;
+  box-shadow: 0 0 12px rgba(72, 202, 228, 0.55);
+}
+
+.porthole-glass .scene-detail.tower::after {
+  content: '';
+  position: absolute;
+  width: 24%;
+  height: 65%;
+  right: 14%;
+  top: -55%;
+  background: rgba(202, 240, 248, 0.8);
+  border-radius: 50% 50% 35% 35%;
+  box-shadow: 0 0 10px rgba(173, 232, 244, 0.7);
+}
+
+.porthole-glass .scene-detail.viewport {
+  width: 12%;
+  height: 12%;
+  bottom: 22%;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 35%, rgba(202, 240, 248, 0.95), rgba(0, 119, 182, 0.55));
+  border: 2px solid rgba(173, 232, 244, 0.7);
+  box-shadow: 0 0 10px rgba(72, 202, 228, 0.5);
+}
+
+.porthole-glass .scene-detail.viewport.viewport-a {
+  left: 32%;
+}
+
+.porthole-glass .scene-detail.viewport.viewport-b {
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.porthole-glass .scene-detail.viewport.viewport-c {
+  left: 68%;
+}
+
+[data-scene='starboard'] .scene-detail.viewport.viewport-c {
+  display: none;
+}
+
+.porthole-glass .scene-detail.buoy {
+  width: 18%;
+  height: 18%;
+  top: 24%;
+  left: 28%;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 30%, rgba(202, 240, 248, 0.9), rgba(0, 119, 182, 0.6));
+  box-shadow: 0 0 12px rgba(144, 224, 239, 0.6);
+}
+
+.porthole-glass .scene-detail.buoy::before {
+  content: '';
+  position: absolute;
+  width: 3px;
+  height: 180%;
+  top: -110%;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(173, 232, 244, 0.85);
+  border-radius: 2px;
+}
+
+.porthole-glass .scene-detail.buoy::after {
+  content: '';
+  position: absolute;
+  left: calc(50% + 2px);
+  top: -122%;
+  border-style: solid;
+  border-width: 8px 0 8px 13px;
+  border-color: transparent transparent transparent rgba(72, 202, 228, 0.9);
+}
+
+[data-scene='starboard'] .scene-detail.buoy::after {
+  border-left-color: transparent;
+}
+
+.porthole-glass .scene-detail.kelp {
+  width: 10%;
+  bottom: 8%;
+  background: linear-gradient(180deg, rgba(72, 202, 228, 0.9), rgba(0, 36, 82, 0.35));
+  border-radius: 50% 50% 0 0;
+  box-shadow: 0 0 14px rgba(72, 202, 228, 0.35);
+}
+
+.porthole-glass .scene-detail.kelp::after {
+  content: '';
+  position: absolute;
+  width: 140%;
+  height: 55%;
+  left: 50%;
+  bottom: 25%;
+  transform: translateX(-50%) rotate(12deg);
+  border-radius: 45% 45% 20% 20%;
+  background: rgba(144, 224, 239, 0.35);
+}
+
+.porthole-glass .scene-detail.kelp.kelp-port {
+  left: 14%;
+  height: 48%;
+}
+
+.porthole-glass .scene-detail.kelp.kelp-starboard {
+  right: 14%;
+  height: 55%;
+}
+
+[data-scene='starboard'] .scene-detail.kelp.kelp-starboard {
+  height: 34%;
+}
+
+.porthole-glass .scene-detail.jellyfish {
+  width: 24%;
+  height: 18%;
+  top: 34%;
+  right: 16%;
+  border-radius: 50% 50% 60% 60%;
+  background: radial-gradient(circle at 50% 35%, rgba(173, 232, 244, 0.85), rgba(0, 119, 182, 0.25));
+  box-shadow: 0 0 14px rgba(144, 224, 239, 0.55);
+  opacity: 0.95;
+}
+
+.porthole-glass .scene-detail.jellyfish::after {
+  content: '';
+  position: absolute;
+  bottom: -45%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 75%;
+  height: 65%;
+  border-radius: 50% 50% 70% 70%;
+  background: radial-gradient(circle, rgba(173, 232, 244, 0.5), transparent 70%);
+  filter: blur(2px);
+}
+
+[data-scene='port'] .scene-detail.jellyfish {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.porthole-glass .scene-detail.sonar {
+  width: 58%;
+  height: 58%;
+  top: 18%;
+  left: 50%;
+  transform: translateX(-50%);
+  border-radius: 50%;
+  border: 2px solid rgba(144, 224, 239, 0.35);
+  box-shadow: 0 0 18px rgba(72, 202, 228, 0.35);
+  opacity: 0.35;
+}
+
+.porthole-glass .scene-detail.sonar::after {
+  content: '';
+  position: absolute;
+  inset: 14%;
+  border-radius: 50%;
+  border: 2px solid rgba(72, 202, 228, 0.25);
+  animation: sonarPulse 5.5s linear infinite;
+}
+
+[data-scene='starboard'] .scene-detail.sonar {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.porthole-glass .scene-detail.bubbles {
+  width: 6%;
+  height: 6%;
+  border-radius: 50%;
+  background: rgba(173, 232, 244, 0.85);
+  box-shadow: 0 0 12px rgba(144, 224, 239, 0.45);
+  opacity: 0.85;
+}
+
+.porthole-glass .scene-detail.bubbles::before,
+.porthole-glass .scene-detail.bubbles::after {
+  content: '';
+  position: absolute;
+  border-radius: 50%;
+  background: rgba(173, 232, 244, 0.65);
+}
+
+.porthole-glass .scene-detail.bubbles::before {
+  width: 75%;
+  height: 75%;
+  left: -55%;
+  top: -25%;
+}
+
+.porthole-glass .scene-detail.bubbles::after {
+  width: 50%;
+  height: 50%;
+  right: -45%;
+  bottom: 10%;
+  opacity: 0.85;
+}
+
+.porthole-glass .scene-detail.bubbles.cluster-one {
+  left: 22%;
+  bottom: 38%;
+}
+
+.porthole-glass .scene-detail.bubbles.cluster-two {
+  left: 30%;
+  bottom: 24%;
+}
+
+[data-scene='starboard'] .scene-detail.bubbles.cluster-two {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.difference-marker {
+  position: absolute;
+  width: 2.75rem;
+  height: 2.75rem;
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+  border: 2px dashed rgba(173, 232, 244, 0.7);
+  background: rgba(0, 119, 182, 0.18);
+  box-shadow: 0 0 10px rgba(72, 202, 228, 0.3);
+  cursor: pointer;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0.55;
+  transition: opacity 0.25s ease, background 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
+  color: transparent;
+}
+
+.difference-marker:hover,
+.difference-marker:focus {
+  opacity: 1;
+  border-style: solid;
+  border-color: rgba(144, 224, 239, 0.95);
+  background: rgba(0, 119, 182, 0.35);
+  box-shadow: 0 0 16px rgba(72, 202, 228, 0.65);
+  outline: none;
+}
+
+.difference-marker.found {
+  opacity: 1;
+  border-style: solid;
+  border-color: rgba(72, 202, 228, 0.95);
+  background: rgba(72, 202, 228, 0.9);
+  box-shadow: 0 0 18px rgba(144, 224, 239, 0.8);
+  color: #03045e;
+}
+
+.porthole-progress {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1rem;
+  border-radius: 0.75rem;
+  background: rgba(0, 119, 182, 0.18);
+  border: 1px solid rgba(144, 224, 239, 0.35);
+  color: #ade8f4;
+  font-weight: 500;
+}
+
+.porthole-progress span {
+  font-weight: 600;
+  color: #90e0ef;
+}
+
+.porthole-progress-message {
+  color: rgba(202, 240, 248, 0.85);
+  font-size: 0.95rem;
+}
+
+.porthole-success {
+  display: none;
+  padding: 1rem;
+  border-radius: 0.75rem;
+  background: linear-gradient(135deg, rgba(72, 202, 228, 0.12), rgba(0, 119, 182, 0.25));
+  border: 1px solid rgba(72, 202, 228, 0.55);
+  text-align: center;
+  color: #caf0f8;
+  box-shadow: 0 0 20px rgba(0, 180, 216, 0.35);
+}
+
+.porthole-success.visible {
+  display: block;
+}
+
+.porthole-keyword {
+  margin: 0.35rem 0 0;
+  font-size: 1.8rem;
+  font-weight: 700;
+  letter-spacing: 0.35rem;
+  color: #48cae4;
+  text-transform: uppercase;
+  text-shadow: 0 0 18px rgba(72, 202, 228, 0.7);
+}
+
+@keyframes sonarPulse {
+  0% {
+    transform: scale(0.85);
+    opacity: 0.4;
+  }
+  70% {
+    opacity: 0.9;
+  }
+  100% {
+    transform: scale(1.25);
+    opacity: 0;
+  }
+}
+
+@media (max-width: 720px) {
+  .porthole-scenes {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .porthole-frame {
+    max-width: 240px;
+  }
+}
+
 .peg {
   width: 2rem;
   height: 2rem;
@@ -801,4 +1227,93 @@ section.active {
   #nav-submit {
     width: 100%;
   }
+=======
+.sonar-console {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  align-items: center;
+  text-align: center;
+}
+
+.sonar-description {
+  max-width: 32rem;
+  margin: 0 auto;
+  color: rgba(202, 240, 248, 0.85);
+}
+
+.sonar-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 3rem);
+  gap: 0.75rem;
+  padding: 1rem;
+  background: rgba(1, 22, 39, 0.6);
+  border: 1px solid rgba(72, 202, 228, 0.35);
+  border-radius: 0.75rem;
+  box-shadow: inset 0 0 18px rgba(0, 119, 182, 0.25);
+}
+
+.sonar-cell {
+  width: 3rem;
+  height: 3rem;
+  border-radius: 50%;
+  border: 1px solid rgba(72, 202, 228, 0.4);
+  background: radial-gradient(circle at 35% 35%, rgba(144, 224, 239, 0.18), rgba(1, 22, 39, 0.9));
+  box-shadow: 0 0 8px rgba(72, 202, 228, 0.25);
+  cursor: pointer;
+  transition: transform 0.18s ease, box-shadow 0.18s ease, background 0.18s ease;
+  color: transparent;
+}
+
+.sonar-cell:hover {
+  box-shadow: 0 0 10px rgba(72, 202, 228, 0.35);
+  transform: translateY(-2px);
+}
+
+.sonar-cell:focus-visible {
+  outline: 2px solid #ffd166;
+  outline-offset: 2px;
+}
+
+.sonar-cell.active {
+  background: radial-gradient(circle at 40% 40%, #90e0ef, #00b4d8 55%, #03045e 100%);
+  box-shadow: 0 0 18px rgba(144, 224, 239, 0.65);
+}
+
+.sonar-clue {
+  margin: 0;
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 0.95rem;
+  line-height: 1.5;
+  color: #ade8f4;
+}
+
+.sonar-clue .sonar-alert {
+  display: block;
+  margin-top: 0.5rem;
+  color: #ffd166;
+  font-weight: 600;
+}
+
+.sonar-clue .sonar-confirm {
+  display: block;
+  margin-top: 0.5rem;
+  color: #9ef01a;
+  font-weight: 600;
+}
+
+.sonar-success {
+  background: rgba(72, 201, 176, 0.15);
+  border: 1px solid rgba(72, 201, 176, 0.5);
+  border-radius: 0.75rem;
+  padding: 0.75rem 1.25rem;
+  box-shadow: 0 0 16px rgba(72, 201, 176, 0.3);
+  color: #b7efc5;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.sonar-success strong {
+  color: #d8f3dc;
+  margin-right: 0.5rem;
 }

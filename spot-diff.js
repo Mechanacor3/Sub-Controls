@@ -3,16 +3,26 @@
     return;
   }
 
+  const KEYWORD = 'PERISCOPE';
+
+  function callIfAvailable(handlerName) {
+    const handler = window[handlerName];
+    if (typeof handler === 'function') {
+      handler();
+    }
+  }
+
   function initPuzzle() {
-    // Placeholder for future spot-the-difference setup.
+    callIfAvailable('initializePortholePuzzle');
   }
 
   function resetPuzzle() {
-    // No dynamic state yet; reserved for future implementation.
+    callIfAvailable('resetPortholePuzzle');
   }
 
   function revealHint() {
-    return '🔍 Porthole Puzzle: Calibration pending.';
+    callIfAvailable('revealPortholeSolution');
+    return `🔍 Porthole Puzzle Keyword: ${KEYWORD}`;
   }
 
   app.registerPuzzle('spot-diff', {
