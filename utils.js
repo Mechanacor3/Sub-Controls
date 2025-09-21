@@ -9,6 +9,18 @@
   const devOutput = document.getElementById('dev-output');
   let keywordOwner = null;
 
+  function onDocumentReady(callback) {
+    if (typeof callback !== 'function') {
+      return;
+    }
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', callback, { once: true });
+    } else {
+      callback();
+    }
+  }
+
   function activateTab(targetId) {
     const buttons = Array.from(document.querySelectorAll('nav .tab'));
     const sections = Array.from(document.querySelectorAll('section'));
@@ -52,7 +64,7 @@
     puzzles.set(id, entry);
 
     if (typeof entry.init === 'function') {
-      entry.init();
+      onDocumentReady(() => entry.init());
     }
   }
 
@@ -115,7 +127,7 @@
     return keywordBanner;
   }
 
-  setupTabs();
+  onDocumentReady(setupTabs);
 
   const api = {
     registerPuzzle,

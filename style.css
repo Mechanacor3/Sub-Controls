@@ -557,3 +557,93 @@ section.active {
     height: 110px;
   }
 }
+
+.sonar-console {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  align-items: center;
+  text-align: center;
+}
+
+.sonar-description {
+  max-width: 32rem;
+  margin: 0 auto;
+  color: rgba(202, 240, 248, 0.85);
+}
+
+.sonar-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 3rem);
+  gap: 0.75rem;
+  padding: 1rem;
+  background: rgba(1, 22, 39, 0.6);
+  border: 1px solid rgba(72, 202, 228, 0.35);
+  border-radius: 0.75rem;
+  box-shadow: inset 0 0 18px rgba(0, 119, 182, 0.25);
+}
+
+.sonar-cell {
+  width: 3rem;
+  height: 3rem;
+  border-radius: 50%;
+  border: 1px solid rgba(72, 202, 228, 0.4);
+  background: radial-gradient(circle at 35% 35%, rgba(144, 224, 239, 0.18), rgba(1, 22, 39, 0.9));
+  box-shadow: 0 0 8px rgba(72, 202, 228, 0.25);
+  cursor: pointer;
+  transition: transform 0.18s ease, box-shadow 0.18s ease, background 0.18s ease;
+  color: transparent;
+}
+
+.sonar-cell:hover {
+  box-shadow: 0 0 10px rgba(72, 202, 228, 0.35);
+  transform: translateY(-2px);
+}
+
+.sonar-cell:focus-visible {
+  outline: 2px solid #ffd166;
+  outline-offset: 2px;
+}
+
+.sonar-cell.active {
+  background: radial-gradient(circle at 40% 40%, #90e0ef, #00b4d8 55%, #03045e 100%);
+  box-shadow: 0 0 18px rgba(144, 224, 239, 0.65);
+}
+
+.sonar-clue {
+  margin: 0;
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 0.95rem;
+  line-height: 1.5;
+  color: #ade8f4;
+}
+
+.sonar-clue .sonar-alert {
+  display: block;
+  margin-top: 0.5rem;
+  color: #ffd166;
+  font-weight: 600;
+}
+
+.sonar-clue .sonar-confirm {
+  display: block;
+  margin-top: 0.5rem;
+  color: #9ef01a;
+  font-weight: 600;
+}
+
+.sonar-success {
+  background: rgba(72, 201, 176, 0.15);
+  border: 1px solid rgba(72, 201, 176, 0.5);
+  border-radius: 0.75rem;
+  padding: 0.75rem 1.25rem;
+  box-shadow: 0 0 16px rgba(72, 201, 176, 0.3);
+  color: #b7efc5;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.sonar-success strong {
+  color: #d8f3dc;
+  margin-right: 0.5rem;
+}

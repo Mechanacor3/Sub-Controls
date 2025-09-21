@@ -123,9 +123,21 @@
   </section>
 
   <section id="sonar">
-    <div class="content-box placeholder">
-      <h2>📡 Sonar Shapes</h2>
-      <p>Sonar arrays are aligning. Puzzle upload pending.</p>
+    <div class="content-box">
+      <div class="sonar-console">
+        <div>
+          <h2>📡 Sonar Shapes</h2>
+          <p class="sonar-description">
+            Cycle the pings to trace the contact silhouette. The row and column readouts show how many sonar pips should glow in
+            each line—overcharge a lane and the console will refuse the input.
+          </p>
+        </div>
+        <div class="sonar-grid" id="sonar-grid" role="grid" aria-label="Sonar targeting grid"></div>
+        <p class="sonar-clue" id="sonar-clue"></p>
+        <div class="sonar-success" id="sonar-success" hidden>
+          <strong>Keyword detected:</strong> <span id="sonar-keyword">TORPEDO</span>
+        </div>
+      </div>
     </div>
   </section>
 
@@ -136,11 +148,11 @@
     </div>
   </section>
 
+  <script src="sonar.js"></script>
   <script src="utils.js"></script>
   <script src="control-unlock.js"></script>
   <script src="ballast.js"></script>
   <script src="spot-diff.js"></script>
-  <script src="sonar.js"></script>
   <script src="navigation.js"></script>
 </body>
 </html>
