@@ -1,4 +1,12 @@
 const colors = ['red', 'blue', 'green', 'yellow', 'purple', 'orange'];
+const colorEmojis = {
+  red: '🐙',
+  blue: '🐳',
+  green: '🐢',
+  yellow: '🐠',
+  purple: '🪼',
+  orange: '🐡',
+};
 const keywords = ['RUDDER', 'PERISCOPE', 'HELM', 'BALLAST'];
 
 let solution;
@@ -80,8 +88,12 @@ function renderBoard() {
         slot.classList.add('filled');
         slot.style.backgroundColor = guess[i];
         slot.style.border = '2px solid white';
-      } else if (index === currentRow) {
-        slot.style.border = '2px dashed #ccc';
+        slot.textContent = colorEmojis[guess[i]] ?? '';
+      } else {
+        slot.textContent = '';
+        if (index === currentRow) {
+          slot.style.border = '2px dashed #ccc';
+        }
       }
       row.appendChild(slot);
     }
@@ -131,11 +143,29 @@ function checkGuess() {
 
     puzzleBox.innerHTML = `<h2>✅ Code Cracked!</h2>
       <p style='font-size:1.2rem;'>The final code was:</p>
-      <div style='display:flex; justify-content:center; gap:1rem; margin-bottom: 1rem;'>
+      <div style='
+        display:flex;
+        justify-content:center;
+        gap:1rem;
+        margin-bottom: 1rem;
+      '>
         ${solution
           .map(
             color =>
-              `<div style='width:2rem; height:2rem; border-radius:50%; background:${color}; border:2px solid #fff;'></div>`
+              `<div
+                style='
+                  width:2rem;
+                  height:2rem;
+                  border-radius:50%;
+                  background:${color};
+                  border:2px solid #fff;
+                  display:flex;
+                  align-items:center;
+                  justify-content:center;
+                  font-size:1.3rem;
+                  text-shadow:0 0 4px rgba(1, 22, 39, 0.65);
+                '
+              >${colorEmojis[color] ?? ''}</div>`
           )
           .join('')}
       </div>
@@ -169,6 +199,7 @@ function renderColorPicker() {
     const peg = document.createElement('div');
     peg.className = 'peg';
     peg.style.backgroundColor = color;
+    peg.textContent = colorEmojis[color] ?? '';
     peg.addEventListener('click', () => handleColorClick(color));
     colorPicker.appendChild(peg);
   });
