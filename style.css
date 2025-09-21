@@ -545,6 +545,15 @@ section.active {
   border-style: solid;
 }
 
+.guess-slot.undoable {
+  cursor: pointer;
+  box-shadow: 0 0 6px rgba(173, 232, 244, 0.6);
+}
+
+.guess-slot.undoable:active {
+  transform: scale(0.95);
+}
+
 .score-box {
   width: 2.5rem;
   margin-left: 0.5rem;
