@@ -23,6 +23,7 @@
   let scores = [];
   let currentRow = 0;
   let solved = false;
+  let pendingCheck = null;
 
   function generateSolution() {
     return Array.from({ length: 4 }, () => colors[Math.floor(Math.random() * colors.length)]);
@@ -49,6 +50,13 @@
           slot.style.backgroundColor = guess[i];
           slot.style.border = '2px solid white';
           slot.textContent = colorEmojis[guess[i]] ?? '';
+          const isUndoable =
+            !solved && index === currentRow && i === guess.length - 1 && guess.length <= 4;
+          if (isUndoable) {
+            slot.classList.add('undoable');
+            slot.title = 'Undo last color';
+            slot.addEventListener('click', undoLastSelection);
+          }
         } else {
           slot.textContent = '';
           if (index === currentRow) {
@@ -78,9 +86,29 @@
       guesses[currentRow].push(color);
       renderBoard();
       if (guesses[currentRow].length === 4) {
-        setTimeout(checkGuess, 300);
+        pendingCheck = setTimeout(() => {
+          pendingCheck = null;
+          checkGuess();
+        }, 300);
       }
     }
+  }
+
+  function undoLastSelection() {
+    if (solved) return;
+
+    const currentGuess = guesses[currentRow];
+    if (!currentGuess || !currentGuess.length) {
+      return;
+    }
+
+    if (pendingCheck) {
+      clearTimeout(pendingCheck);
+      pendingCheck = null;
+    }
+
+    currentGuess.pop();
+    renderBoard();
   }
 
   function renderColorPicker() {
@@ -97,7 +125,14 @@
   }
 
   function checkGuess() {
+    if (pendingCheck) {
+      clearTimeout(pendingCheck);
+      pendingCheck = null;
+    }
     const guess = guesses[currentRow];
+    if (!guess || guess.length < 4) {
+      return;
+    }
     let black = 0;
     let white = 0;
     const solutionCopy = [...solution];
@@ -175,6 +210,7 @@
     currentRow = 0;
     solution = generateSolution();
     solved = false;
+    pendingCheck = null;
   }
 
   function buildPuzzleMarkup() {
