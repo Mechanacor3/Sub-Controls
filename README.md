@@ -50,6 +50,7 @@ Each puzzle reveals a **nautical keyword** like `RUDDER`, `PERISCOPE`, or `HELM`
 ├── ballast.js          # Logic for Ballast math puzzle
 ├── sonar.js            # Logic for sonar pattern puzzle
 ├── navigation.js       # Logic for Nav riddle / encryption
+├── utils.js            # Utils shared by various puzzles
 ├── README.md           # This file
 └── AGENTS.md           # Codex/LLM instructions (optional)
 ```
