@@ -35,6 +35,107 @@
     </div>
   </section>
 
+  <section id="spot-diff">
+    <div class="content-box placeholder">
+      <h2>🔍 Porthole Puzzle</h2>
+      <p>The porthole display is still calibrating. Check back soon for this challenge.</p>
+    </div>
+  </section>
+
+  <section id="ballast">
+    <div class="content-box ballast-panel" id="ballast-panel">
+      <div>
+        <h2>⚖️ Ballast Balance</h2>
+        <p>Trim the submarine by tuning the ballast levers. Use the polarity switch to vent or flood tanks, then lock in your adjustments before alarms overwhelm the crew.</p>
+      </div>
+      <div class="ballast-body">
+        <div class="ballast-controls">
+          <div class="lever-bank">
+            <div class="ballast-lever" data-lever="bow">
+              <div class="lever-title">Bow Flood</div>
+              <div class="lever-track">
+                <span class="lever-stop">VENT</span>
+                <input type="range" min="0" max="4" value="2" />
+                <span class="lever-stop">FLOOD</span>
+              </div>
+              <div class="lever-readout">Trim shift: <span class="lever-value">0</span></div>
+            </div>
+            <div class="ballast-lever" data-lever="stern">
+              <div class="lever-title">Stern Pumps</div>
+              <div class="lever-track">
+                <span class="lever-stop">VENT</span>
+                <input type="range" min="0" max="4" value="2" />
+                <span class="lever-stop">FLOOD</span>
+              </div>
+              <div class="lever-readout">Trim shift: <span class="lever-value">0</span></div>
+            </div>
+            <div class="ballast-lever" data-lever="port">
+              <div class="lever-title">Port Trim</div>
+              <div class="lever-track">
+                <span class="lever-stop">VENT</span>
+                <input type="range" min="0" max="4" value="2" />
+                <span class="lever-stop">FLOOD</span>
+              </div>
+              <div class="lever-readout">Trim shift: <span class="lever-value">0</span></div>
+            </div>
+            <div class="ballast-lever" data-lever="starboard">
+              <div class="lever-title">Starboard Trim</div>
+              <div class="lever-track">
+                <span class="lever-stop">VENT</span>
+                <input type="range" min="0" max="4" value="2" />
+                <span class="lever-stop">FLOOD</span>
+              </div>
+              <div class="lever-readout">Trim shift: <span class="lever-value">0</span></div>
+            </div>
+          </div>
+          <div class="ballast-actions">
+            <button id="ballast-polarity" class="toggle-button">Polarity: Flood Tanks</button>
+            <button id="ballast-confirm" class="confirm-button">Confirm Adjustment</button>
+            <div class="ballast-moves">Moves remaining: <span id="ballast-moves">0</span></div>
+            <div class="ballast-digital" id="ballast-digital">Stability score: --</div>
+          </div>
+        </div>
+        <div class="ballast-gauges">
+          <div class="gauge tilt-gauge">
+            <div class="gauge-face">
+              <div class="needle"></div>
+              <div class="gauge-center"></div>
+            </div>
+            <div class="gauge-label">Trim Gauge</div>
+            <div class="gauge-readout" id="ballast-tilt-readout">--</div>
+          </div>
+          <div class="gauge depth-gauge">
+            <div class="gauge-face">
+              <div class="needle"></div>
+              <div class="gauge-center"></div>
+            </div>
+            <div class="gauge-label">Depth Gauge</div>
+            <div class="gauge-readout" id="ballast-depth-readout">--</div>
+          </div>
+        </div>
+      </div>
+      <div class="ballast-status" id="ballast-status">Ballast array warming up…</div>
+      <div class="ballast-outcome" id="ballast-outcome"></div>
+      <div class="ballast-reset">
+        <button id="ballast-reset">Reset Ballast System</button>
+      </div>
+    </div>
+  </section>
+
+  <section id="sonar">
+    <div class="content-box placeholder">
+      <h2>📡 Sonar Shapes</h2>
+      <p>Sonar arrays are aligning. Puzzle upload pending.</p>
+    </div>
+  </section>
+
+  <section id="navigation">
+    <div class="content-box placeholder">
+      <h2>🗺️ Nav Riddle</h2>
+      <p>The captain's logbook is sealed tight. Await further instructions.</p>
+    </div>
+  </section>
+
   <script src="control-unlock.js"></script>
 </body>
 </html>
