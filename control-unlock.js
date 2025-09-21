@@ -209,6 +209,39 @@
     resetPuzzle();
   }
 
+  function enhancePortholeIntegration() {
+    const originalReset = window.resetGame;
+    const originalReveal = window.revealSolution;
+
+    document.addEventListener('DOMContentLoaded', () => {
+      if (typeof window.initializePortholePuzzle === 'function') {
+        window.initializePortholePuzzle();
+      }
+    });
+
+    window.resetGame = function (...args) {
+      if (typeof originalReset === 'function') {
+        originalReset.apply(this, args);
+      }
+      if (typeof window.resetPortholePuzzle === 'function') {
+        window.resetPortholePuzzle();
+      }
+    };
+
+    window.revealSolution = function (...args) {
+      const result =
+        typeof originalReveal === 'function' ? originalReveal.apply(this, args) : undefined;
+
+      if (typeof window.revealPortholeSolution === 'function') {
+        window.revealPortholeSolution();
+      }
+
+      return result;
+    };
+  }
+
+  enhancePortholeIntegration();
+
   app.registerPuzzle('control-unlock', {
     init: initPuzzle,
     reset: resetPuzzle,
