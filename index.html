@@ -130,17 +130,87 @@
   </section>
 
   <section id="navigation">
-    <div class="content-box placeholder">
+    <div class="content-box nav-riddle" id="nav-riddle">
       <h2>🗺️ Nav Riddle</h2>
-      <p>The captain's logbook is sealed tight. Await further instructions.</p>
+      <p class="nav-story">
+        A midnight squall scattered the plotting room notes. To unlock the helm, decode the captain's layered message and
+        broadcast the keyword back to the bridge.
+      </p>
+
+      <div class="nav-clues">
+        <article class="nav-clue-panel">
+          <h3>Captain's Log Fragment</h3>
+          <p>
+            "Stitch a fresh <strong>Chart</strong> from the sea's whispers: follow the <strong>Current</strong> that bends toward
+            the <strong>Harpoon</strong>, mark the hidden <strong>Anchor</strong>, trace the ridge of submerged <strong>Reefs</strong>,
+            and trust the <strong>Tide</strong> to draw the final line."
+          </p>
+          <p class="nav-clue-note">The emphasized bearings align in order with the proper course.</p>
+        </article>
+        <article class="nav-clue-panel">
+          <h3>Signal Officer Relay</h3>
+          <p>The comms array repeats the bearing as pulses. Convert each reading using A = 1.</p>
+          <ul class="nav-cipher">
+            <li>3 → ???</li>
+            <li>8 → ???</li>
+            <li>1 → ???</li>
+            <li>18 → ???</li>
+            <li>20 → ???</li>
+          </ul>
+          <p class="nav-clue-note">Log the translated letters from bow to stern.</p>
+        </article>
+      </div>
+
+      <form class="nav-input-group" id="nav-form" autocomplete="off">
+        <label for="nav-answer">Broadcast the five-letter keyword:</label>
+        <div class="nav-input-row">
+          <input
+            type="text"
+            id="nav-answer"
+            maxlength="5"
+            inputmode="text"
+            spellcheck="false"
+            aria-describedby="nav-feedback"
+            placeholder="Enter code"
+          />
+          <button type="submit" id="nav-submit">Transmit</button>
+        </div>
+        <p class="nav-feedback" id="nav-feedback" role="status" aria-live="polite"></p>
+      </form>
+
+      <div class="nav-hints">
+        <button type="button" class="nav-hint-toggle" data-hint="nav-hint-1" data-unlock-attempts="0" aria-expanded="false">
+          Reveal hint about the captain's log
+        </button>
+        <p id="nav-hint-1" class="nav-hint" hidden>
+          The log words in bold each start with a letter that lines up to spell the course keyword.
+        </p>
+        <button
+          type="button"
+          class="nav-hint-toggle"
+          data-hint="nav-hint-2"
+          data-unlock-attempts="2"
+          aria-expanded="false"
+          disabled
+        >
+          Reveal hint about the signal pulses
+        </button>
+        <p id="nav-hint-2" class="nav-hint" hidden>
+          Convert the pulse numbers to letters with A=1 to verify each position in the keyword.
+        </p>
+      </div>
+
+      <div class="nav-success" id="nav-success" aria-live="polite" aria-hidden="true">
+        <strong>Course Locked!</strong> Keyword confirmed: <span class="keyword">CHART</span>
+      </div>
     </div>
   </section>
 
   <script src="utils.js"></script>
+  <script src="navigation.js"></script>
   <script src="control-unlock.js"></script>
   <script src="ballast.js"></script>
   <script src="spot-diff.js"></script>
   <script src="sonar.js"></script>
-  <script src="navigation.js"></script>
 </body>
 </html>
