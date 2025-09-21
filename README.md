@@ -14,7 +14,7 @@ Perfect for classrooms, puzzle hunts, D&D campaigns, or digital escape rooms.
 
 | Puzzle                | Theme                       | Mechanics                       |
 |----------------------|-----------------------------|----------------------------------|
-| ⚓ Mastermind Code    | Submarine Lock System       | Classic codebreaking logic       |
+| ⚓ Control Unlock     | Submarine Lock System       | Classic codebreaking logic       |
 | 🔍 Porthole Puzzle    | Visual Identification       | Spot the difference              |
 | ⚖️ Ballast Balance    | Sub-level Control Mechanism | Math/weight distribution puzzle  |
 | 📡 Sonar Shapes       | Navigation Grid Mapping     | Pattern recognition + logic grid |
@@ -45,7 +45,7 @@ Each puzzle reveals a **nautical keyword** like `RUDDER`, `PERISCOPE`, or `HELM`
 /nautical-puzzle-hub/
 ├── index.html          # Main entrypoint with puzzle tabs
 ├── style.css           # Global visual styling
-├── mastermind.js       # Logic for Mastermind Code
+├── control-unlock.js   # Logic for Control Unlock puzzle
 ├── porthole.js         # Logic for Spot-the-Difference
 ├── ballast.js          # Logic for Ballast math puzzle
 ├── sonar.js            # Logic for sonar pattern puzzle
@@ -116,6 +116,6 @@ To deploy:
 
 ## 💡 Inspirations
 
-- Classic [Mastermind](https://en.wikipedia.org/wiki/Mastermind_(board_game)) and logic puzzles
+- Classic codebreaking logic puzzles (e.g., [this board game](https://en.wikipedia.org/wiki/Mastermind_(board_game)))
 - Submarine tropes from *Crimson Tide*, *Hunt for Red October*, *20,000 Leagues Under the Sea*
 - Old-school educational games and escape rooms

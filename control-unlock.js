@@ -129,7 +129,7 @@ function resetGame() {
   devOutput.textContent = '';
 
   puzzleBox.innerHTML = `
-    <h2>⚓ Mastermind Code</h2>
+    <h2>⚓ Control Unlock</h2>
     <p>Guess the hidden 4-color signal used by the submarine crew to unlock the vault. You have 10 tries to break the code!</p>
     <div class="board" id="board"></div>
     <div class="color-picker" id="color-picker"></div>
