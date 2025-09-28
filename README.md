@@ -100,6 +100,14 @@ exposes two helpers:
 These hooks make it easy to script deterministic scenarios (e.g., `SubControls.setControlUnlockState({ solution: ['red', 'red',
 'blue', 'blue'], keyword: 'RUDDER', apply: true })`).
 
+The **Ballast Balance** puzzle now offers lightweight helpers as well:
+
+- `SubControls.getBallastConfig()` – Returns the base tilt/depth, slider range, and lever coefficients.
+- `SubControls.simulateBallast(offsets, polarity)` – Applies lever offsets (array of four values between -2 and 2) and polarity to compute the resulting tilt/depth.
+- `SubControls.setBallastControls({ offsets, polarity, autoConfirm })` – Programmatically move the sliders, update polarity (`1`/`-1`, `'flood'`, or `'vent'`), and optionally trigger a confirmation click.
+
+Resets still restore the default slider positions and polarity, so regular play remains unchanged.
+
 ---
 
 ## 🧩 Sample Keywords (used for progression)
