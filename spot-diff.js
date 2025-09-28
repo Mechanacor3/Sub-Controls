@@ -5,6 +5,34 @@
 
   const KEYWORD = 'PERISCOPE';
 
+  function ensurePortholeHooks() {
+    if (typeof app.registerResetHook === 'function') {
+      if (!app.__portholeResetHook) {
+        app.__portholeResetHook = () => {
+          const reset = window.resetPortholePuzzle;
+          if (typeof reset === 'function') {
+            reset();
+          }
+        };
+      }
+      app.registerResetHook(app.__portholeResetHook);
+    }
+
+    if (typeof app.registerRevealHook === 'function') {
+      if (!app.__portholeRevealHook) {
+        app.__portholeRevealHook = () => {
+          const reveal = window.revealPortholeSolution;
+          if (typeof reveal === 'function') {
+            reveal();
+          }
+        };
+      }
+      app.registerRevealHook(app.__portholeRevealHook);
+    }
+  }
+
+  ensurePortholeHooks();
+
   function callIfAvailable(handlerName) {
     const handler = window[handlerName];
     if (typeof handler === 'function') {
@@ -17,11 +45,18 @@
   }
 
   function resetPuzzle() {
+    const reset = window.resetPortholePuzzle;
+    if (typeof reset === 'function' && app && app.__portholeResetHook === reset) {
+      return;
+    }
     callIfAvailable('resetPortholePuzzle');
   }
 
   function revealHint() {
-    callIfAvailable('revealPortholeSolution');
+    const reveal = window.revealPortholeSolution;
+    if (!(typeof reveal === 'function' && app && app.__portholeRevealHook === reveal)) {
+      callIfAvailable('revealPortholeSolution');
+    }
     return `🔍 Porthole Puzzle Keyword: ${KEYWORD}`;
   }
 

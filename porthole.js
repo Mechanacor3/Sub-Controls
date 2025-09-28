@@ -269,4 +269,24 @@
   global.initializePortholePuzzle = initialisePuzzle;
   global.resetPortholePuzzle = resetPuzzle;
   global.revealPortholeSolution = revealPuzzle;
+
+  if (global.SubControls) {
+    const sc = global.SubControls;
+
+    if (typeof sc.unregisterResetHook === 'function' && sc.__portholeResetHook) {
+      sc.unregisterResetHook(sc.__portholeResetHook);
+    }
+    if (typeof sc.registerResetHook === 'function') {
+      sc.__portholeResetHook = resetPuzzle;
+      sc.registerResetHook(resetPuzzle);
+    }
+
+    if (typeof sc.unregisterRevealHook === 'function' && sc.__portholeRevealHook) {
+      sc.unregisterRevealHook(sc.__portholeRevealHook);
+    }
+    if (typeof sc.registerRevealHook === 'function') {
+      sc.__portholeRevealHook = revealPuzzle;
+      sc.registerRevealHook(revealPuzzle);
+    }
+  }
 })(window);

@@ -375,38 +375,37 @@
     resetPuzzle();
   }
 
-  function enhancePortholeIntegration() {
-    const originalReset = window.resetGame;
-    const originalReveal = window.revealSolution;
-
+  function ensurePortholeHooks() {
     document.addEventListener('DOMContentLoaded', () => {
       if (typeof window.initializePortholePuzzle === 'function') {
         window.initializePortholePuzzle();
       }
     });
 
-    window.resetGame = function (...args) {
-      if (typeof originalReset === 'function') {
-        originalReset.apply(this, args);
+    if (typeof app.registerResetHook === 'function') {
+      if (!app.__portholeResetHook) {
+        app.__portholeResetHook = () => {
+          if (typeof window.resetPortholePuzzle === 'function') {
+            window.resetPortholePuzzle();
+          }
+        };
       }
-      if (typeof window.resetPortholePuzzle === 'function') {
-        window.resetPortholePuzzle();
+      app.registerResetHook(app.__portholeResetHook);
+    }
+
+    if (typeof app.registerRevealHook === 'function') {
+      if (!app.__portholeRevealHook) {
+        app.__portholeRevealHook = () => {
+          if (typeof window.revealPortholeSolution === 'function') {
+            window.revealPortholeSolution();
+          }
+        };
       }
-    };
-
-    window.revealSolution = function (...args) {
-      const result =
-        typeof originalReveal === 'function' ? originalReveal.apply(this, args) : undefined;
-
-      if (typeof window.revealPortholeSolution === 'function') {
-        window.revealPortholeSolution();
-      }
-
-      return result;
-    };
+      app.registerRevealHook(app.__portholeRevealHook);
+    }
   }
 
-  enhancePortholeIntegration();
+  ensurePortholeHooks();
 
   app.registerPuzzle('control-unlock', {
     init: initPuzzle,
