@@ -83,6 +83,25 @@ This mode is hidden by default and meant for GMs or debugging.
 
 ---
 
+## 🤖 Automation Hooks
+
+Automated checks can control the **Control Unlock** puzzle without touching the DOM. The shared `window.SubControls` API now
+exposes two helpers:
+
+- `SubControls.setControlUnlockState(options)` – Overrides puzzle randomness. Supports:
+  - `solution` – Array of four valid colors (`['red', 'blue', 'green', 'yellow', 'purple', 'orange']`).
+  - `keyword` – String keyword to display on success.
+  - `rng` – Custom RNG function returning a number between 0 and 1.
+  - `solutionFactory` / `keywordFactory` – Functions that return the next solution or keyword.
+  - `apply` – Set to `true` to immediately rebuild the puzzle with the new settings.
+- `SubControls.getControlUnlockState()` – Returns the active solution, latest keyword (if solved), and current override
+  configuration.
+
+These hooks make it easy to script deterministic scenarios (e.g., `SubControls.setControlUnlockState({ solution: ['red', 'red',
+'blue', 'blue'], keyword: 'RUDDER', apply: true })`).
+
+---
+
 ## 🧩 Sample Keywords (used for progression)
 
 - `RUDDER`

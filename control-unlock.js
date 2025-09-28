@@ -19,18 +19,146 @@
   let colorPicker = null;
 
   let solution = [];
+  let activeKeyword = null;
   let guesses = [];
   let scores = [];
   let currentRow = 0;
   let solved = false;
   let pendingCheck = null;
 
-  function generateSolution() {
-    return Array.from({ length: 4 }, () => colors[Math.floor(Math.random() * colors.length)]);
+  const generationOverrides = {
+    rng: Math.random,
+    solution: null,
+    keyword: null,
+    solutionFactory: null,
+    keywordFactory: null,
+  };
+
+  function normaliseRandom(raw) {
+    if (!Number.isFinite(raw)) {
+      return Math.random();
+    }
+    const fractional = raw % 1;
+    if (fractional === 0 && raw !== 0) {
+      return 0;
+    }
+    return fractional < 0 ? fractional + 1 : fractional;
   }
 
-  function randomKeyword() {
-    return keywords[Math.floor(Math.random() * keywords.length)];
+  function getRng() {
+    return typeof generationOverrides.rng === 'function' ? generationOverrides.rng : Math.random;
+  }
+
+  function generateSolution(rngFn = Math.random) {
+    const rng = typeof rngFn === 'function' ? rngFn : Math.random;
+    return Array.from({ length: 4 }, () => {
+      const raw = rng();
+      const value = normaliseRandom(typeof raw === 'number' ? raw : Math.random());
+      const index = Math.min(colors.length - 1, Math.floor(value * colors.length));
+      return colors[index];
+    });
+  }
+
+  function validateSolution(candidate) {
+    if (!Array.isArray(candidate) || candidate.length < 4) {
+      return null;
+    }
+    const validated = candidate.slice(0, 4).filter(color => colors.includes(color));
+    return validated.length === 4 ? validated : null;
+  }
+
+  function pickSolution() {
+    if (typeof generationOverrides.solutionFactory === 'function') {
+      const generated = generationOverrides.solutionFactory({ colors: colors.slice() });
+      const validated = validateSolution(generated);
+      if (validated) {
+        return validated;
+      }
+    }
+
+    const preset = validateSolution(generationOverrides.solution);
+    if (preset) {
+      return preset;
+    }
+
+    return generateSolution(getRng());
+  }
+
+  function pickKeyword() {
+    if (typeof generationOverrides.keywordFactory === 'function') {
+      const result = generationOverrides.keywordFactory({ keywords: keywords.slice() });
+      if (typeof result === 'string' && result.trim()) {
+        return result.trim();
+      }
+    }
+
+    if (typeof generationOverrides.keyword === 'string' && generationOverrides.keyword.trim()) {
+      return generationOverrides.keyword.trim();
+    }
+
+    const rng = getRng();
+    const raw = rng();
+    const value = normaliseRandom(typeof raw === 'number' ? raw : Math.random());
+    const index = Math.min(keywords.length - 1, Math.floor(value * keywords.length));
+    return keywords[index];
+  }
+
+  function setControlUnlockState(options = {}) {
+    if (!options || typeof options !== 'object') {
+      return getControlUnlockState();
+    }
+
+    if (Object.prototype.hasOwnProperty.call(options, 'rng')) {
+      generationOverrides.rng = typeof options.rng === 'function' ? options.rng : Math.random;
+    }
+
+    if (Object.prototype.hasOwnProperty.call(options, 'solutionFactory')) {
+      generationOverrides.solutionFactory =
+        typeof options.solutionFactory === 'function' ? options.solutionFactory : null;
+    }
+
+    if (Object.prototype.hasOwnProperty.call(options, 'keywordFactory')) {
+      generationOverrides.keywordFactory =
+        typeof options.keywordFactory === 'function' ? options.keywordFactory : null;
+    }
+
+    if (Object.prototype.hasOwnProperty.call(options, 'solution')) {
+      generationOverrides.solution = validateSolution(options.solution);
+      if (generationOverrides.solution) {
+        solution = generationOverrides.solution.slice();
+        activeKeyword = null;
+        solved = false;
+      }
+    }
+
+    if (Object.prototype.hasOwnProperty.call(options, 'keyword')) {
+      generationOverrides.keyword =
+        typeof options.keyword === 'string' && options.keyword.trim() ? options.keyword.trim() : null;
+      if (generationOverrides.keyword) {
+        activeKeyword = null;
+      }
+    }
+
+    if (options.apply === true) {
+      resetPuzzle();
+    }
+
+    return getControlUnlockState();
+  }
+
+  function getControlUnlockState() {
+    return {
+      solution: solution.slice(),
+      keyword: activeKeyword,
+      solved,
+      overrides: {
+        rng: generationOverrides.rng,
+        solution: generationOverrides.solution ? generationOverrides.solution.slice() : null,
+        keyword: generationOverrides.keyword ?? null,
+        solutionFactory: generationOverrides.solutionFactory ?? null,
+        keywordFactory: generationOverrides.keywordFactory ?? null,
+      },
+    };
   }
 
   function renderBoard() {
@@ -157,7 +285,8 @@
 
     if (black === 4) {
       solved = true;
-      const keyword = randomKeyword();
+      const keyword = pickKeyword();
+      activeKeyword = keyword;
       app.setKeywordBanner(`🔓 UNLOCKED: ${keyword}`, 'control-unlock');
       showSuccess(keyword);
       return;
@@ -208,7 +337,8 @@
     guesses = Array.from({ length: 10 }, () => []);
     scores = Array.from({ length: 10 }, () => ({ black: 0, white: 0 }));
     currentRow = 0;
-    solution = generateSolution();
+    solution = pickSolution();
+    activeKeyword = null;
     solved = false;
     pendingCheck = null;
   }
@@ -283,5 +413,10 @@
     reset: resetPuzzle,
     reveal: revealSolutionText,
     description: 'Control Unlock',
+  });
+
+  Object.assign(app, {
+    setControlUnlockState,
+    getControlUnlockState,
   });
 })(window.SubControls);
