@@ -4,26 +4,40 @@
   }
 
   const puzzles = new Map();
-  const keywordBanner = document.getElementById('keyword-banner');
-  const devTools = document.getElementById('dev-tools');
-  const devOutput = document.getElementById('dev-output');
+  let keywordBannerEl = null;
+  let devToolsEl = null;
+  let devOutputEl = null;
   let keywordOwner = null;
+
+  function getDocument() {
+    return typeof document === 'undefined' ? null : document;
+  }
 
   function onDocumentReady(callback) {
     if (typeof callback !== 'function') {
       return;
     }
 
-    if (document.readyState === 'loading') {
-      document.addEventListener('DOMContentLoaded', callback, { once: true });
+    const doc = getDocument();
+    if (!doc) {
+      return;
+    }
+
+    if (doc.readyState === 'loading') {
+      doc.addEventListener('DOMContentLoaded', callback, { once: true });
     } else {
       callback();
     }
   }
 
   function activateTab(targetId) {
-    const buttons = Array.from(document.querySelectorAll('nav .tab'));
-    const sections = Array.from(document.querySelectorAll('section'));
+    const doc = getDocument();
+    if (!doc) {
+      return;
+    }
+
+    const buttons = Array.from(doc.querySelectorAll('nav .tab'));
+    const sections = Array.from(doc.querySelectorAll('section'));
 
     buttons.forEach(button => {
       button.classList.toggle('active', button.dataset.target === targetId);
@@ -35,9 +49,14 @@
   }
 
   function setupTabs() {
-    const buttons = Array.from(document.querySelectorAll('nav .tab'));
-    const sections = Array.from(document.querySelectorAll('section'));
-    const defaultSection = document.querySelector('section.active');
+    const doc = getDocument();
+    if (!doc) {
+      return;
+    }
+
+    const buttons = Array.from(doc.querySelectorAll('nav .tab'));
+    const sections = Array.from(doc.querySelectorAll('section'));
+    const defaultSection = doc.querySelector('section.active');
     const defaultId = defaultSection ? defaultSection.id : sections[0]?.id;
 
     buttons.forEach(button => {
@@ -95,10 +114,56 @@
     setDevOutput(sections.join('<br>'));
   }
 
+  function getKeywordBanner() {
+    const doc = getDocument();
+    if (!doc) {
+      keywordBannerEl = null;
+      return null;
+    }
+
+    if (!keywordBannerEl || !doc.contains(keywordBannerEl)) {
+      keywordBannerEl = doc.getElementById('keyword-banner');
+    }
+
+    return keywordBannerEl;
+  }
+
+  function getDevTools() {
+    const doc = getDocument();
+    if (!doc) {
+      devToolsEl = null;
+      return null;
+    }
+
+    if (!devToolsEl || !doc.contains(devToolsEl)) {
+      devToolsEl = doc.getElementById('dev-tools');
+    }
+
+    return devToolsEl;
+  }
+
+  function getDevOutput() {
+    const doc = getDocument();
+    if (!doc) {
+      devOutputEl = null;
+      return null;
+    }
+
+    if (!devOutputEl || !doc.contains(devOutputEl)) {
+      devOutputEl = doc.getElementById('dev-output');
+    }
+
+    return devOutputEl;
+  }
+
   function setKeywordBanner(message, owner) {
-    if (!keywordBanner) return;
-    keywordBanner.textContent = message ?? '';
-    keywordBanner.style.display = message ? 'block' : 'none';
+    const banner = getKeywordBanner();
+    if (!banner) {
+      return;
+    }
+
+    banner.textContent = message ?? '';
+    banner.style.display = message ? 'block' : 'none';
     keywordOwner = message ? owner ?? null : null;
   }
 
@@ -110,24 +175,41 @@
   }
 
   function toggleDevTools() {
-    if (!devTools) return;
-    devTools.style.display = devTools.style.display === 'none' ? 'block' : 'none';
+    const tools = getDevTools();
+    if (!tools) {
+      return;
+    }
+
+    tools.style.display = tools.style.display === 'none' ? 'block' : 'none';
   }
 
   function setDevOutput(content) {
-    if (!devOutput) return;
-    devOutput.innerHTML = content;
+    const output = getDevOutput();
+    if (!output) {
+      return;
+    }
+
+    output.innerHTML = content;
   }
 
   function getDevOutputElement() {
-    return devOutput;
+    return getDevOutput();
   }
 
   function getKeywordBannerElement() {
-    return keywordBanner;
+    return getKeywordBanner();
   }
 
-  onDocumentReady(setupTabs);
+  function primeDomCaches() {
+    getKeywordBanner();
+    getDevTools();
+    getDevOutput();
+  }
+
+  onDocumentReady(() => {
+    primeDomCaches();
+    setupTabs();
+  });
 
   const api = {
     registerPuzzle,
