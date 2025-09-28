@@ -3,6 +3,10 @@
     return;
   }
 
+  const BALLAST_OFFSET_BASE = 2;
+  const BALLAST_OFFSET_MIN = -2;
+  const BALLAST_OFFSET_MAX = 2;
+
   const ballastConfig = {
     baseTilt: -10,
     baseDepth: -8,
@@ -45,6 +49,70 @@
     depthReadout: null,
     levers: [],
   };
+
+  function sliderValueToOffset(rawValue) {
+    const parsed = Number.parseInt(rawValue, 10);
+    if (Number.isNaN(parsed)) {
+      return 0;
+    }
+    return parsed - BALLAST_OFFSET_BASE;
+  }
+
+  function clampBallastOffset(value) {
+    if (value === undefined || value === null) {
+      return 0;
+    }
+
+    const numeric = typeof value === 'string' ? Number.parseInt(value, 10) : Number(value);
+    if (!Number.isFinite(numeric)) {
+      return 0;
+    }
+
+    const truncated = Math.trunc(numeric);
+    if (truncated < BALLAST_OFFSET_MIN) return BALLAST_OFFSET_MIN;
+    if (truncated > BALLAST_OFFSET_MAX) return BALLAST_OFFSET_MAX;
+    return truncated;
+  }
+
+  function normaliseOffsets(offsets, { allowNull = false } = {}) {
+    if (!Array.isArray(offsets)) {
+      return allowNull ? null : ballastLevers.map(() => 0);
+    }
+
+    return ballastLevers.map((_, index) => clampBallastOffset(offsets[index]));
+  }
+
+  function normalisePolarity(polarity) {
+    if (polarity === undefined || polarity === null) {
+      return null;
+    }
+
+    if (polarity === 1 || polarity === -1) {
+      return polarity;
+    }
+
+    if (typeof polarity === 'string') {
+      const trimmed = polarity.trim().toLowerCase();
+      if (!trimmed) {
+        return null;
+      }
+
+      if (trimmed === 'flood' || trimmed === 'fill' || trimmed === 'positive') {
+        return 1;
+      }
+
+      if (trimmed === 'vent' || trimmed === 'drain' || trimmed === 'negative') {
+        return -1;
+      }
+    }
+
+    const numeric = Number(polarity);
+    if (!Number.isFinite(numeric) || numeric === 0) {
+      return null;
+    }
+
+    return numeric > 0 ? 1 : -1;
+  }
 
   function initPuzzle() {
     ballastElements.panel = document.getElementById('ballast-panel');
@@ -99,7 +167,7 @@
     };
 
     ballastElements.levers.forEach(({ slider }) => {
-      slider.value = '2';
+      slider.value = String(BALLAST_OFFSET_BASE);
       slider.disabled = false;
     });
 
@@ -143,7 +211,7 @@
   function updateBallastValueDisplays() {
     ballastElements.levers.forEach(({ slider, valueDisplay }) => {
       if (!valueDisplay) return;
-      const offset = parseInt(slider.value, 10) - 2;
+      const offset = sliderValueToOffset(slider.value);
       valueDisplay.textContent = offset > 0 ? `+${offset}` : `${offset}`;
     });
   }
@@ -164,7 +232,7 @@
     let depth = ballastConfig.baseDepth;
 
     ballastElements.levers.forEach(({ slider, config }) => {
-      const offset = parseInt(slider.value, 10) - 2;
+      const offset = sliderValueToOffset(slider.value);
       tilt += ballastState.polarity * offset * config.tilt;
       depth += ballastState.polarity * offset * config.depth;
     });
@@ -336,10 +404,10 @@
 
   function findBallastSolutions() {
     const combos = [];
-    for (let a = -2; a <= 2; a++) {
-      for (let b = -2; b <= 2; b++) {
-        for (let c = -2; c <= 2; c++) {
-          for (let d = -2; d <= 2; d++) {
+    for (let a = BALLAST_OFFSET_MIN; a <= BALLAST_OFFSET_MAX; a++) {
+      for (let b = BALLAST_OFFSET_MIN; b <= BALLAST_OFFSET_MAX; b++) {
+        for (let c = BALLAST_OFFSET_MIN; c <= BALLAST_OFFSET_MAX; c++) {
+          for (let d = BALLAST_OFFSET_MIN; d <= BALLAST_OFFSET_MAX; d++) {
             const offsets = [a, b, c, d];
             let tilt = ballastConfig.baseTilt;
             let depth = ballastConfig.baseDepth;
@@ -376,10 +444,93 @@
     return `⚖️ Ballast Offsets (flood polarity): ${ballastHint}`;
   }
 
+  function getBallastConfig() {
+    return {
+      baseTilt: ballastConfig.baseTilt,
+      baseDepth: ballastConfig.baseDepth,
+      maxMoves: ballastConfig.maxMoves,
+      gaugeRange: ballastConfig.gaugeRange,
+      gaugeDegrees: ballastConfig.gaugeDegrees,
+      keyword: ballastConfig.keyword,
+      polarity: ballastState.polarity,
+      slider: {
+        minOffset: BALLAST_OFFSET_MIN,
+        maxOffset: BALLAST_OFFSET_MAX,
+        neutralValue: BALLAST_OFFSET_BASE,
+      },
+      levers: ballastLevers.map(lever => ({ ...lever })),
+    };
+  }
+
+  function simulateBallast(offsets = [], polarity = 1) {
+    const resolvedOffsets = normaliseOffsets(offsets);
+    const resolvedPolarity = normalisePolarity(polarity);
+    const polarityMultiplier = resolvedPolarity ?? 1;
+
+    let tilt = ballastConfig.baseTilt;
+    let depth = ballastConfig.baseDepth;
+
+    resolvedOffsets.forEach((offset, index) => {
+      const lever = ballastLevers[index];
+      tilt += polarityMultiplier * offset * lever.tilt;
+      depth += polarityMultiplier * offset * lever.depth;
+    });
+
+    return { tilt, depth };
+  }
+
+  function setBallastControls(options = {}) {
+    if (!options || typeof options !== 'object') {
+      return false;
+    }
+
+    if (ballastState.locked) {
+      return false;
+    }
+
+    const offsets = normaliseOffsets(options.offsets, { allowNull: true });
+    const polarity = normalisePolarity(options.polarity);
+    const autoConfirm = Boolean(options.autoConfirm);
+
+    let applied = false;
+
+    if (Array.isArray(offsets) && ballastElements.levers.length) {
+      ballastElements.levers.forEach(({ slider }, index) => {
+        const offset = offsets[index];
+        slider.value = String(offset + BALLAST_OFFSET_BASE);
+      });
+      updateBallastValueDisplays();
+      applied = true;
+    }
+
+    if (typeof polarity === 'number') {
+      ballastState.polarity = polarity;
+      updateBallastPolarity();
+      applied = true;
+    }
+
+    if (applied) {
+      showPendingBallastMessage();
+    }
+
+    if (autoConfirm) {
+      commitBallastAdjustment();
+      applied = true;
+    }
+
+    return applied;
+  }
+
   app.registerPuzzle('ballast', {
     init: initPuzzle,
     reset: resetBallastPuzzle,
     reveal: revealBallastHint,
     description: 'Ballast Balance',
+  });
+
+  Object.assign(app, {
+    getBallastConfig,
+    simulateBallast,
+    setBallastControls,
   });
 })(window.SubControls);
