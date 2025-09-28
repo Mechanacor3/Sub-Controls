@@ -79,7 +79,7 @@
       [4, 1],
     ],
   ];
-  const KEYWORD = 'TORPEDO';
+  const DEFAULT_KEYWORD = 'TORPEDO';
 
   let app = null;
   let registered = false;
@@ -93,6 +93,33 @@
   let solutionSet = new Set();
   let rowTargets = Array(GRID_SIZE).fill(0);
   let columnTargets = Array(GRID_SIZE).fill(0);
+
+  const generationOverrides = {
+    rng: Math.random,
+    layout: null,
+    keyword: null,
+  };
+
+  function getRng() {
+    return typeof generationOverrides.rng === 'function' ? generationOverrides.rng : Math.random;
+  }
+
+  function normaliseRandom(raw) {
+    if (!Number.isFinite(raw)) {
+      return Math.random();
+    }
+    const fractional = raw % 1;
+    if (fractional === 0 && raw !== 0) {
+      return 0;
+    }
+    return fractional < 0 ? fractional + 1 : fractional;
+  }
+
+  function getActiveKeyword() {
+    return typeof generationOverrides.keyword === 'string' && generationOverrides.keyword
+      ? generationOverrides.keyword
+      : DEFAULT_KEYWORD;
+  }
 
   function parseCellId(id) {
     const [row, col] = id.split('-').map(Number);
@@ -108,9 +135,10 @@
   }
 
   function transformLayout(layout) {
-    const rotationSteps = Math.floor(Math.random() * 4);
-    const flipHorizontal = Math.random() < 0.5;
-    const flipVertical = Math.random() < 0.5;
+    const rng = getRng();
+    const rotationSteps = Math.floor(normaliseRandom(typeof rng === 'function' ? rng() : Math.random()) * 4);
+    const flipHorizontal = normaliseRandom(typeof rng === 'function' ? rng() : Math.random()) < 0.5;
+    const flipVertical = normaliseRandom(typeof rng === 'function' ? rng() : Math.random()) < 0.5;
 
     return layout.map(coords => {
       let point = { row: coords[0], col: coords[1] };
@@ -151,17 +179,60 @@
   }
 
   function chooseRandomLayout() {
-    const baseLayout = BASE_LAYOUTS[Math.floor(Math.random() * BASE_LAYOUTS.length)];
+    const rng = getRng();
+    const raw = typeof rng === 'function' ? rng() : Math.random();
+    const value = normaliseRandom(typeof raw === 'number' ? raw : Math.random());
+    const baseLayout = BASE_LAYOUTS[Math.floor(Math.min(BASE_LAYOUTS.length - 1, value * BASE_LAYOUTS.length))];
     const transformed = transformLayout(baseLayout);
     return Array.from(new Set(transformed));
   }
 
   function assignNewLayout() {
-    solutionCells = chooseRandomLayout();
+    if (Array.isArray(generationOverrides.layout) && generationOverrides.layout.length) {
+      solutionCells = Array.from(new Set(generationOverrides.layout));
+    } else {
+      solutionCells = chooseRandomLayout();
+    }
     solutionSet = new Set(solutionCells);
     const targets = computeTargets(solutionCells);
     rowTargets = targets.rows;
     columnTargets = targets.columns;
+  }
+
+  function validateLayout(layout) {
+    if (!Array.isArray(layout)) {
+      return null;
+    }
+
+    const normalised = new Set();
+
+    layout.forEach(entry => {
+      if (typeof entry === 'string') {
+        const { row, col } = parseCellId(entry);
+        if (Number.isInteger(row) && Number.isInteger(col)) {
+          if (row >= 0 && row < GRID_SIZE && col >= 0 && col < GRID_SIZE) {
+            normalised.add(createCellId(row, col));
+          }
+        }
+        return;
+      }
+
+      if (Array.isArray(entry) && entry.length >= 2) {
+        const row = Number(entry[0]);
+        const col = Number(entry[1]);
+        if (Number.isInteger(row) && Number.isInteger(col)) {
+          if (row >= 0 && row < GRID_SIZE && col >= 0 && col < GRID_SIZE) {
+            normalised.add(createCellId(row, col));
+          }
+        }
+      }
+    });
+
+    if (normalised.size === 0) {
+      return null;
+    }
+
+    return Array.from(normalised);
   }
 
   function collectState() {
@@ -246,11 +317,11 @@
     }
 
     if (successKeyword) {
-      successKeyword.textContent = KEYWORD;
+      successKeyword.textContent = getActiveKeyword();
     }
 
     if (app && typeof app.setKeywordBanner === 'function') {
-      app.setKeywordBanner(`📡 SIGNAL LOCKED: ${KEYWORD}`, 'sonar');
+      app.setKeywordBanner(`📡 SIGNAL LOCKED: ${getActiveKeyword()}`, 'sonar');
     }
 
     updateClueStatus('', state);
@@ -347,7 +418,7 @@
     }
 
     if (successKeyword) {
-      successKeyword.textContent = KEYWORD;
+      successKeyword.textContent = getActiveKeyword();
     }
 
     if (app && typeof app.clearKeywordBanner === 'function') {
@@ -387,6 +458,10 @@
       buildGrid();
     }
 
+    if (solutionCells.length === 0) {
+      assignNewLayout();
+    }
+
     Array.from(gridElement.querySelectorAll('.sonar-cell')).forEach(cell => {
       const shouldActivate = cell.dataset.cell ? solutionSet.has(cell.dataset.cell) : false;
       cell.classList.toggle('active', shouldActivate);
@@ -395,7 +470,62 @@
     const state = collectState();
     markSolved(state);
 
-    return `📡 Sonar Solution: ${KEYWORD} — rows ${rowTargets.join('/')}, columns ${columnTargets.join('/')}.`;
+    return `📡 Sonar Solution: ${getActiveKeyword()} — rows ${rowTargets.join('/')}, columns ${columnTargets.join('/')}.`;
+  }
+
+  function getSonarState() {
+    return {
+      layout: solutionCells.slice(),
+      keyword: getActiveKeyword(),
+      solved,
+      overrides: {
+        rng: generationOverrides.rng,
+        layout: generationOverrides.layout ? generationOverrides.layout.slice() : null,
+        keyword: generationOverrides.keyword ?? null,
+      },
+    };
+  }
+
+  function setSonarState(options = {}) {
+    if (!options || typeof options !== 'object') {
+      return getSonarState();
+    }
+
+    if (Object.prototype.hasOwnProperty.call(options, 'rng')) {
+      generationOverrides.rng = typeof options.rng === 'function' ? options.rng : Math.random;
+    }
+
+    if (Object.prototype.hasOwnProperty.call(options, 'layout')) {
+      const validated = validateLayout(options.layout);
+      generationOverrides.layout = validated;
+      if (validated) {
+        solutionCells = validated.slice();
+        solutionSet = new Set(solutionCells);
+        const targets = computeTargets(solutionCells);
+        rowTargets = targets.rows;
+        columnTargets = targets.columns;
+        solved = false;
+      } else if (options.layout === null) {
+        solutionCells = [];
+        solutionSet = new Set();
+        rowTargets = Array(GRID_SIZE).fill(0);
+        columnTargets = Array(GRID_SIZE).fill(0);
+      }
+    }
+
+    if (Object.prototype.hasOwnProperty.call(options, 'keyword')) {
+      if (typeof options.keyword === 'string' && options.keyword.trim()) {
+        generationOverrides.keyword = options.keyword.trim();
+      } else if (options.keyword === null) {
+        generationOverrides.keyword = null;
+      }
+    }
+
+    if (options.apply === true) {
+      resetSonarPuzzle();
+    }
+
+    return getSonarState();
   }
 
   function attemptRegistration() {
@@ -411,6 +541,8 @@
         reveal: revealSonarSolution,
         description: 'Sonar Shapes',
       });
+      app.setSonarState = setSonarState;
+      app.getSonarState = getSonarState;
       registered = true;
     } else {
       global.setTimeout(attemptRegistration, 40);
@@ -422,4 +554,6 @@
   global.initializeSonarPuzzle = initializeSonarPuzzle;
   global.resetSonarPuzzle = resetSonarPuzzle;
   global.revealSonarSolution = revealSonarSolution;
+  global.setSonarState = setSonarState;
+  global.getSonarState = getSonarState;
 })(window);
