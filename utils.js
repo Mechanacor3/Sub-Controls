@@ -4,6 +4,8 @@
   }
 
   const puzzles = new Map();
+  const resetHooks = new Set();
+  const revealHooks = new Set();
   const keywordBanner = document.getElementById('keyword-banner');
   const devTools = document.getElementById('dev-tools');
   const devOutput = document.getElementById('dev-output');
@@ -68,9 +70,57 @@
     }
   }
 
+  function invokeHooks(collection) {
+    collection.forEach(handler => {
+      try {
+        handler();
+      } catch (error) {
+        console.error('SubControls hook error:', error);
+      }
+    });
+  }
+
+  function registerHook(collection, handler) {
+    if (typeof handler !== 'function') {
+      return () => {};
+    }
+
+    collection.add(handler);
+
+    return () => {
+      collection.delete(handler);
+    };
+  }
+
+  function unregisterHook(collection, handler) {
+    if (typeof handler !== 'function') {
+      return;
+    }
+
+    collection.delete(handler);
+  }
+
+  function registerResetHook(handler) {
+    return registerHook(resetHooks, handler);
+  }
+
+  function registerRevealHook(handler) {
+    return registerHook(revealHooks, handler);
+  }
+
+  function unregisterResetHook(handler) {
+    unregisterHook(resetHooks, handler);
+  }
+
+  function unregisterRevealHook(handler) {
+    unregisterHook(revealHooks, handler);
+  }
+
   function resetAllPuzzles() {
     clearKeywordBanner();
     setDevOutput('');
+
+    invokeHooks(resetHooks);
 
     puzzles.forEach(entry => {
       if (typeof entry.reset === 'function') {
@@ -81,6 +131,8 @@
 
   function revealAllSolutions() {
     const sections = [];
+
+    invokeHooks(revealHooks);
 
     puzzles.forEach((entry, id) => {
       if (typeof entry.reveal === 'function') {
@@ -139,6 +191,10 @@
     setDevOutput,
     getDevOutputElement,
     getKeywordBannerElement,
+    registerResetHook,
+    registerRevealHook,
+    unregisterResetHook,
+    unregisterRevealHook,
   };
 
   global.SubControls = Object.assign(global.SubControls || {}, api);
