@@ -22,9 +22,14 @@ module.exports = defineConfig({
     timeout: 10 * 1000
   },
   projects: [
-    {
-      name: 'chromium',
-      use: { ...devices['Desktop Chrome'] }
-    }
-  ]
+    'ballast',
+    'control-unlock',
+    'navigation',
+    'porthole',
+    'sonar'
+  ].map((name) => ({
+    name,
+    testMatch: `**/${name}.spec.js`,
+    use: { ...devices['Desktop Chrome'] }
+  }))
 });
