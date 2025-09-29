@@ -73,6 +73,24 @@
     }
   }
 
+  function setupTaskLinks() {
+    const doc = getDocument();
+    if (!doc) {
+      return;
+    }
+
+    const links = Array.from(doc.querySelectorAll('.task-link[data-target]'));
+    links.forEach(link => {
+      link.addEventListener('click', event => {
+        event.preventDefault();
+        const targetId = link.dataset.target;
+        if (targetId) {
+          activateTab(targetId);
+        }
+      });
+    });
+  }
+
   function registerPuzzle(id, handlers) {
     if (!id) {
       throw new Error('Puzzle id is required when registering a puzzle.');
@@ -264,6 +282,7 @@
   onDocumentReady(() => {
     primeDomCaches();
     setupTabs();
+    setupTaskLinks();
   });
 
   const api = {
