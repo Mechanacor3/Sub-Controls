@@ -220,12 +220,18 @@
         <div>
           <h2>📡 Sonar Shapes</h2>
           <p class="sonar-description">
-            Cycle the pings to trace the contact silhouette. The row and column readouts show how many sonar pips should glow in
-            each line—overcharge a lane and the console will refuse the input.
+            Cycle the pings to trace the contact silhouette. Fill each meter without exceeding the target pings shown beside the
+            grid.
           </p>
         </div>
-        <div class="sonar-grid" id="sonar-grid" role="grid" aria-label="Sonar targeting grid"></div>
-        <p class="sonar-clue" id="sonar-clue"></p>
+        <div class="sonar-board" aria-label="Sonar targeting grid">
+          <div class="sonar-axis sonar-axis-columns" id="sonar-column-readouts"></div>
+          <div class="sonar-board-inner">
+            <div class="sonar-axis sonar-axis-rows" id="sonar-row-readouts"></div>
+            <div class="sonar-grid" id="sonar-grid" role="grid" aria-label="Sonar targeting grid"></div>
+          </div>
+        </div>
+        <p class="sonar-clue" id="sonar-clue" role="status" aria-live="polite"></p>
         <div class="sonar-success" id="sonar-success" hidden>
           <strong>Keyword detected:</strong> <span id="sonar-keyword">TORPEDO</span>
         </div>
