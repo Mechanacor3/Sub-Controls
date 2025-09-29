@@ -86,6 +86,8 @@
   let gridBuilt = false;
   let gridElement = null;
   let clueElement = null;
+  let rowReadoutElement = null;
+  let columnReadoutElement = null;
   let successElement = null;
   let successKeyword = null;
   let solved = false;
@@ -258,29 +260,75 @@
     return { rowCounts, columnCounts, activeIds };
   }
 
+  function renderAxisReadouts(container, currentCounts, targetCounts, axisLabelFormatter) {
+    if (!container) {
+      return;
+    }
+
+    const doc = container.ownerDocument;
+    container.innerHTML = '';
+
+    targetCounts.forEach((target, index) => {
+      const wrapper = doc.createElement('div');
+      wrapper.className = 'sonar-readout';
+
+      const label = doc.createElement('span');
+      label.className = 'sonar-readout-label';
+      label.textContent = axisLabelFormatter(index);
+
+      const meter = doc.createElement('div');
+      meter.className = 'sonar-readout-meter';
+      meter.setAttribute('role', 'meter');
+      meter.setAttribute('aria-valuemin', '0');
+      meter.setAttribute('aria-valuemax', String(Math.max(target, 1)));
+      meter.setAttribute('aria-valuenow', String(Math.min(currentCounts[index], Math.max(target, 1))));
+      meter.setAttribute('aria-label', `${axisLabelFormatter(index)} target ${target}`);
+
+      const fill = doc.createElement('div');
+      fill.className = 'sonar-readout-fill';
+      const fillRatio = target === 0 ? 0 : Math.min(1, currentCounts[index] / target);
+      fill.style.width = `${Math.max(0, Math.min(1, fillRatio)) * 100}%`;
+      meter.appendChild(fill);
+
+      const value = doc.createElement('span');
+      value.className = 'sonar-readout-value';
+      value.textContent = `${currentCounts[index]}/${target}`;
+
+      wrapper.appendChild(label);
+      wrapper.appendChild(meter);
+      wrapper.appendChild(value);
+      container.appendChild(wrapper);
+    });
+  }
+
   function updateClueStatus(additionalMessage = '', state = null) {
     if (!clueElement) {
       return;
     }
 
     const current = state ?? collectState();
-    const rowStatus = rowTargets
-      .map((target, index) => `${current.rowCounts[index]}/${target}`)
-      .join('  |  ');
-    const columnStatus = columnTargets
-      .map((target, index) => `${current.columnCounts[index]}/${target}`)
-      .join('  |  ');
+    renderAxisReadouts(rowReadoutElement, current.rowCounts, rowTargets, index => `Row ${index + 1}`);
+    renderAxisReadouts(columnReadoutElement, current.columnCounts, columnTargets, index => `Col ${index + 1}`);
 
-    let html = `<strong>Row echoes</strong>: ${rowStatus}`;
-    html += `<br><strong>Column echoes</strong>: ${columnStatus}`;
+    const doc = clueElement.ownerDocument;
+    clueElement.innerHTML = '';
+
+    const summary = doc.createElement('span');
+    summary.className = 'sonar-clue-summary';
+    summary.textContent = solved ? 'All echoes aligned.' : 'Fill every meter to match the incoming echoes.';
+    clueElement.appendChild(summary);
 
     if (additionalMessage) {
-      html += `<span class="sonar-alert">${additionalMessage}</span>`;
+      const alert = doc.createElement('span');
+      alert.className = 'sonar-alert';
+      alert.textContent = additionalMessage;
+      clueElement.appendChild(alert);
     } else if (solved) {
-      html += '<span class="sonar-confirm">Contact confirmed.</span>';
+      const confirm = doc.createElement('span');
+      confirm.className = 'sonar-confirm';
+      confirm.textContent = 'Contact confirmed.';
+      clueElement.appendChild(confirm);
     }
-
-    clueElement.innerHTML = html;
   }
 
   function patternMatches(state) {
@@ -394,10 +442,19 @@
 
     gridElement = section.querySelector('#sonar-grid');
     clueElement = section.querySelector('#sonar-clue');
+    rowReadoutElement = section.querySelector('#sonar-row-readouts');
+    columnReadoutElement = section.querySelector('#sonar-column-readouts');
     successElement = section.querySelector('#sonar-success');
     successKeyword = section.querySelector('#sonar-keyword');
 
-    return Boolean(gridElement && clueElement && successElement && successKeyword);
+    return Boolean(
+      gridElement &&
+      clueElement &&
+      rowReadoutElement &&
+      columnReadoutElement &&
+      successElement &&
+      successKeyword,
+    );
   }
 
   function applyResetState(reshuffle = false) {
