@@ -141,6 +141,28 @@ To deploy:
 
 ---
 
+## 🤖 Automated Testing
+
+End-to-end coverage is available via [Playwright](https://playwright.dev/). The tests boot a lightweight static server, exercise
+each puzzle using the exposed `SubControls` hooks, and confirm that the correct keywords appear in the UI.
+
+1. Install the dev dependencies:
+   ```bash
+   npm install
+   ```
+2. Install the supported Playwright browsers (only required once per environment):
+   ```bash
+   npx playwright install --with-deps
+   ```
+3. Run the full suite:
+   ```bash
+   npx playwright test
+   ```
+
+The configuration lives in `playwright.config.js` and uses `scripts/dev-server.js` to serve the project root during test runs.
+
+---
+
 ## 💡 Inspirations
 
 - Classic codebreaking logic puzzles (e.g., [this board game](https://en.wikipedia.org/wiki/Mastermind_(board_game)))

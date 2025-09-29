@@ -1,0 +1,13 @@
+{
+  "name": "sub-controls",
+  "private": true,
+  "version": "0.0.0",
+  "description": "End-to-end test harness for the Sub-Controls puzzles.",
+  "scripts": {
+    "serve": "node scripts/dev-server.js",
+    "test:e2e": "playwright test"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.44.1"
+  }
+}
