@@ -665,6 +665,62 @@ section.active {
   font-size: 0.8rem;
 }
 
+.admin-evaluate {
+  margin-top: 0.75rem;
+  padding: 0.75rem;
+  background: rgba(10, 38, 71, 0.85);
+  border: 1px solid rgba(144, 224, 239, 0.35);
+  border-radius: 0.5rem;
+  display: grid;
+  gap: 0.75rem;
+  max-width: 18rem;
+}
+
+.admin-evaluate h3 {
+  margin: 0;
+  font-size: 1rem;
+  color: #90e0ef;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.admin-intro {
+  margin: 0;
+  color: #caf0f8;
+  font-size: 0.8rem;
+  line-height: 1.4;
+}
+
+.admin-task {
+  display: grid;
+  gap: 0.35rem;
+  background: rgba(0, 119, 182, 0.18);
+  border-radius: 0.4rem;
+  padding: 0.5rem;
+}
+
+.admin-task label {
+  font-weight: 600;
+  color: #ade8f4;
+  font-size: 0.85rem;
+}
+
+.admin-task select {
+  padding: 0.2rem 0.35rem;
+  font-size: 0.85rem;
+  background: #001d3d;
+  color: #f1f5f9;
+  border: 1px solid rgba(173, 232, 244, 0.4);
+  border-radius: 0.3rem;
+}
+
+.admin-description {
+  margin: 0;
+  color: #e0fbfc;
+  font-size: 0.75rem;
+  line-height: 1.5;
+}
+
 .ballast-panel {
   display: flex;
   flex-direction: column;
