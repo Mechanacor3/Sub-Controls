@@ -27,6 +27,10 @@ These instructions apply to the entire repository.
 ## Testing & Verification
 - Manually open `index.html` in a browser to confirm changes render correctly.
 - For logic changes, test user flows in the browser (e.g., puzzle reset, keyword reveal, dev tools toggle).
+- Run the automated Playwright suite before submitting a change:
+  1. Install dependencies with `npm install` (once per environment).
+  2. Ensure Playwright browsers are available via `npx playwright install --with-deps` (once per environment).
+  3. Execute `npm run test:e2e` and confirm the suite passes.
 
 ## Documentation
 - Update `README.md` whenever behaviour or instructions change in a way users should know about.
