@@ -159,6 +159,12 @@ each puzzle using the exposed `SubControls` hooks, and confirm that the correct 
    npx playwright test
    ```
 
+   To focus on a single puzzle, target its dedicated project:
+   ```bash
+   npx playwright test --project navigation
+   ```
+   Available project names: `ballast`, `control-unlock`, `navigation`, `porthole`, and `sonar`.
+
 The configuration lives in `playwright.config.js` and uses `scripts/dev-server.js` to serve the project root during test runs.
 
 ---
