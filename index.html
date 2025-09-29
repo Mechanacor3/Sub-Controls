@@ -24,6 +24,67 @@
     <strong>🛠️ Dev Tools</strong>
     <button onclick="resetGame()">🔄 Reset Puzzle</button>
     <button onclick="revealSolution()">👁️ Reveal Code</button>
+    <div id="admin-evaluate" class="admin-evaluate" aria-label="Secret admin evaluation panel">
+      <h3>Secret Admin · Evaluate Score</h3>
+      <p class="admin-intro">
+        Use these dropdowns to record your review of each station. Keyword notes explain what successful runs should display.
+      </p>
+      <div class="admin-task">
+        <label for="admin-control-unlock">Control Unlock</label>
+        <select id="admin-control-unlock" name="admin-control-unlock">
+          <option value="unreviewed" selected>Unreviewed</option>
+          <option value="needs-investigation">Needs investigation</option>
+          <option value="verified">Verified ✅</option>
+        </select>
+        <p class="admin-description">
+          <strong>Keywords:</strong> RUDDER, PERISCOPE, HELM, BALLAST — rotating crew signals that appear when the four-peg code is cracked.
+        </p>
+      </div>
+      <div class="admin-task">
+        <label for="admin-porthole">Porthole Puzzle</label>
+        <select id="admin-porthole" name="admin-porthole">
+          <option value="unreviewed" selected>Unreviewed</option>
+          <option value="needs-investigation">Needs investigation</option>
+          <option value="verified">Verified ✅</option>
+        </select>
+        <p class="admin-description">
+          <strong>Keyword:</strong> PERISCOPE — fires when every mismatch between the twin windows has been flagged.
+        </p>
+      </div>
+      <div class="admin-task">
+        <label for="admin-ballast">Ballast Balance</label>
+        <select id="admin-ballast" name="admin-ballast">
+          <option value="unreviewed" selected>Unreviewed</option>
+          <option value="needs-investigation">Needs investigation</option>
+          <option value="verified">Verified ✅</option>
+        </select>
+        <p class="admin-description">
+          <strong>Keyword:</strong> TRIM — confirms the levers and polarity toggle have stabilized the gauges and locked in the adjustments.
+        </p>
+      </div>
+      <div class="admin-task">
+        <label for="admin-sonar">Sonar Shapes</label>
+        <select id="admin-sonar" name="admin-sonar">
+          <option value="unreviewed" selected>Unreviewed</option>
+          <option value="needs-investigation">Needs investigation</option>
+          <option value="verified">Verified ✅</option>
+        </select>
+        <p class="admin-description">
+          <strong>Keyword:</strong> TORPEDO — shows the correct formation has been dialed in and relayed to the bridge.
+        </p>
+      </div>
+      <div class="admin-task">
+        <label for="admin-navigation">Navigation Riddle</label>
+        <select id="admin-navigation" name="admin-navigation">
+          <option value="unreviewed" selected>Unreviewed</option>
+          <option value="needs-investigation">Needs investigation</option>
+          <option value="verified">Verified ✅</option>
+        </select>
+        <p class="admin-description">
+          <strong>Keyword:</strong> CHART — lights up once the plotted route, pulse checks, and final transmission all match the course log.
+        </p>
+      </div>
+    </div>
     <div id="dev-output"></div>
   </div>
 

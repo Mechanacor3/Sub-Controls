@@ -126,6 +126,13 @@ Collected keywords can be used:
 - As D&D item codes
 - To open a hidden tab / secret area
 
+### 🔒 Secret Admin "Evaluate Score" Panel
+
+- Click the site header to toggle the developer tools overlay. The secret admin block lives directly inside that panel.
+- Each puzzle has a dropdown for recording status (`Unreviewed`, `Needs investigation`, `Verified ✅`). Update option text or add new stations in `index.html` under the `#admin-evaluate` container.
+- Styling is centralized in `style.css` (look for the `.admin-evaluate` rules). Add new selectors there when introducing tasks so the panel keeps its compact layout.
+- If a puzzle's success keyword changes, revise the accompanying description text to keep reviewers aligned on what the UI should display.
+
 ---
 
 ## 🧑‍💻 How to Run Locally
