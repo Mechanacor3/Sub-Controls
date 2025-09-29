@@ -12,6 +12,7 @@
   </header>
   <nav>
     <div id="keyword-banner"></div>
+    <button class="tab" data-target="mission">🛳️ Mission Briefing</button>
     <button class="tab" data-target="control-unlock">⚓ Control Unlock</button>
     <button class="tab" data-target="spot-diff">🔍 Porthole Puzzle</button>
     <button class="tab" data-target="ballast">⚖️ Ballast Balance</button>
@@ -26,7 +27,43 @@
     <div id="dev-output"></div>
   </div>
 
-  <section id="control-unlock" class="active">
+  <section id="mission" class="active">
+    <div class="content-box mission-briefing">
+      <h2>🛳️ Mission Briefing</h2>
+      <p class="mission-intro">
+        Welcome aboard, captain! Choose a station to tackle the submarine's challenges. Each mission earns a piece of the final keyword—select a task below to dive in.
+      </p>
+      <div class="task-grid">
+        <article class="task-card">
+          <h3><span class="task-emoji" aria-hidden="true">⚓</span> Control Unlock</h3>
+          <p>Break the crew's four-signal code before attempts run out to unlock the control console.</p>
+          <a href="#control-unlock" class="task-link" data-target="control-unlock">Enter Control Unlock</a>
+        </article>
+        <article class="task-card">
+          <h3><span class="task-emoji" aria-hidden="true">🔍</span> Porthole Puzzle</h3>
+          <p>Study the twin observation windows and mark every difference the lookouts missed.</p>
+          <a href="#spot-diff" class="task-link" data-target="spot-diff">Inspect the Portholes</a>
+        </article>
+        <article class="task-card">
+          <h3><span class="task-emoji" aria-hidden="true">⚖️</span> Ballast Balance</h3>
+          <p>Tune the ballast levers and polarity switch to stabilize the vessel before alarms flare.</p>
+          <a href="#ballast" class="task-link" data-target="ballast">Trim the Ballast</a>
+        </article>
+        <article class="task-card">
+          <h3><span class="task-emoji" aria-hidden="true">📡</span> Sonar Shapes</h3>
+          <p>Decode the sonar echoes by matching the incoming patterns to the correct formation.</p>
+          <a href="#sonar" class="task-link" data-target="sonar">Scan with Sonar</a>
+        </article>
+        <article class="task-card">
+          <h3><span class="task-emoji" aria-hidden="true">🗺️</span> Navigation Riddle</h3>
+          <p>Solve the charting riddle to plot a safe route through the cavernous trenches ahead.</p>
+          <a href="#navigation" class="task-link" data-target="navigation">Chart the Course</a>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section id="control-unlock">
     <div class="content-box" id="puzzle-box">
       <h2>⚓ Control Unlock</h2>
       <p>Guess the hidden 4-color signal used by the submarine crew to unlock the vault. You have 10 tries to break the code!</p>
