@@ -1,81 +1,50 @@
 (function (global) {
   const KEYWORD = 'PERISCOPE';
 
-  const differences = [
+  const changes = [
     {
-      id: 'buoy-flag',
-      label: 'Signal buoy flag',
-      positions: {
-        port: { x: 28, y: 22 },
-        starboard: { x: 28, y: 22 },
-      },
-      found: false,
+      id: 'change1',
+      still: 'change1.webp',
+      alt: 'Still frame highlighting change scenario one.',
+      options: ['thing 1-1', 'thing 1-2', 'thing 1-3', 'thing 1-4'],
+      correctIndex: 0,
     },
     {
-      id: 'jellyfish-glow',
-      label: 'Glowing jellyfish',
-      positions: {
-        port: { x: 76, y: 36 },
-        starboard: { x: 76, y: 36 },
-      },
-      found: false,
+      id: 'change2',
+      still: 'change2.webp',
+      alt: 'Still frame highlighting change scenario two.',
+      options: ['thing 2-1', 'thing 2-2', 'thing 2-3', 'thing 2-4'],
+      correctIndex: 0,
     },
     {
-      id: 'sonar-ping',
-      label: 'Sonar pulse ring',
-      positions: {
-        port: { x: 50, y: 38 },
-        starboard: { x: 50, y: 38 },
-      },
-      found: false,
+      id: 'change3',
+      still: 'change3.webp',
+      alt: 'Still frame highlighting change scenario three.',
+      options: ['thing 3-1', 'thing 3-2', 'thing 3-3', 'thing 3-4'],
+      correctIndex: 0,
     },
     {
-      id: 'kelp-height',
-      label: 'Starboard kelp height',
-      positions: {
-        port: { x: 82, y: 70 },
-        starboard: { x: 82, y: 70 },
-      },
-      found: false,
-    },
-    {
-      id: 'vent-bubbles',
-      label: 'Vent bubble cluster',
-      positions: {
-        port: { x: 26, y: 68 },
-        starboard: { x: 26, y: 68 },
-      },
-      found: false,
-    },
-    {
-      id: 'extra-viewport',
-      label: 'Extra hull viewport',
-      positions: {
-        port: { x: 68, y: 60 },
-        starboard: { x: 68, y: 60 },
-      },
-      found: false,
+      id: 'change4',
+      still: 'change4.webp',
+      alt: 'Still frame highlighting change scenario four.',
+      options: ['thing 4-1', 'thing 4-2', 'thing 4-3', 'thing 4-4'],
+      correctIndex: 0,
     },
   ];
 
-  const differenceMap = new Map(differences.map(diff => [diff.id, diff]));
-
   const state = {
     container: null,
-    scenes: new Map(),
-    markers: new Map(),
-    progressCount: null,
-    totalCount: null,
+    observeButton: null,
+    video: null,
+    still: null,
     progressMessage: null,
     successBanner: null,
     keywordNode: null,
-    initialised: false,
-  };
-
-  const progressMessages = {
-    start: 'Mark each mismatch to light the signal.',
-    mid: 'Keep scanning the portholes for anomalies.',
-    complete: 'All differences logged. Signal ready to transmit.',
+    checklist: null,
+    optionList: null,
+    fieldset: null,
+    currentChange: null,
+    eventsBound: false,
   };
 
   function ensureElements() {
@@ -85,94 +54,173 @@
     }
 
     state.container = container;
-    state.progressCount = container.querySelector('#porthole-found-count');
-    state.totalCount = container.querySelector('#porthole-total-count');
+    state.observeButton = container.querySelector('#porthole-observe-button');
+    state.video = container.querySelector('#porthole-video');
+    state.still = container.querySelector('#porthole-still');
     state.progressMessage = container.querySelector('#porthole-progress-message');
     state.successBanner = container.querySelector('#porthole-success');
     state.keywordNode = container.querySelector('#porthole-keyword');
+    state.checklist = container.querySelector('#porthole-checklist');
+    state.optionList = container.querySelector('#porthole-option-list');
+    state.fieldset = state.checklist ? state.checklist.querySelector('fieldset') : null;
 
-    const portScene = container.querySelector('[data-scene="port"] .porthole-glass');
-    const starboardScene = container.querySelector('[data-scene="starboard"] .porthole-glass');
-
-    state.scenes.clear();
-    state.scenes.set('port', portScene);
-    state.scenes.set('starboard', starboardScene);
-
-    return Boolean(portScene && starboardScene);
+    return Boolean(
+      state.observeButton &&
+        state.video &&
+        state.still &&
+        state.progressMessage &&
+        state.successBanner &&
+        state.keywordNode &&
+        state.checklist &&
+        state.optionList
+    );
   }
 
-  function buildMarkers() {
-    state.markers.clear();
-
-    differences.forEach(diff => {
-      const markerSet = [];
-
-      Object.entries(diff.positions).forEach(([sceneKey, coords]) => {
-        const scene = state.scenes.get(sceneKey);
-        if (!scene) {
-          return;
-        }
-
-        const marker = document.createElement('button');
-        marker.type = 'button';
-        marker.className = 'difference-marker';
-        marker.dataset.differenceId = diff.id;
-        marker.dataset.scene = sceneKey;
-        marker.style.left = `${coords.x}%`;
-        marker.style.top = `${coords.y}%`;
-        marker.setAttribute('aria-label', `${diff.label}. Tap to toggle found state.`);
-        marker.setAttribute('aria-pressed', 'false');
-        marker.addEventListener('click', handleMarkerClick);
-        scene.appendChild(marker);
-        markerSet.push(marker);
-      });
-
-      state.markers.set(diff.id, markerSet);
-    });
-  }
-
-  function setMarkerState(diffId, found) {
-    const markerSet = state.markers.get(diffId);
-    if (!markerSet) {
+  function bindEvents() {
+    if (state.eventsBound) {
       return;
     }
 
-    markerSet.forEach(marker => {
-      marker.classList.toggle('found', found);
-      marker.setAttribute('aria-pressed', found ? 'true' : 'false');
+    if (!state.observeButton || !state.video || !state.checklist) {
+      return;
+    }
+
+    state.eventsBound = true;
+    state.observeButton.addEventListener('click', handleObserveClick);
+    state.video.addEventListener('ended', handleVideoEnded);
+    state.checklist.addEventListener('change', handleOptionSelection);
+  }
+
+  function handleObserveClick() {
+    if (!state.video || !state.observeButton) {
+      return;
+    }
+
+    hideSuccess();
+    state.currentChange = null;
+    setMessage('Playing baseline feed...');
+    setChecklistEnabled(false);
+    clearOptions();
+
+    state.video.hidden = false;
+    state.video.currentTime = 0;
+    state.video.pause();
+    state.video.play().catch(() => {
+      state.observeButton.disabled = false;
+      setMessage('Press Observe again to retry the baseline feed.');
+    });
+
+    if (state.still) {
+      state.still.hidden = true;
+      state.still.removeAttribute('src');
+      state.still.setAttribute('alt', 'Still frame awaiting observation');
+    }
+
+    state.observeButton.disabled = true;
+  }
+
+  function handleVideoEnded() {
+    state.observeButton.disabled = false;
+    displayRandomChange();
+  }
+
+  function displayRandomChange() {
+    if (!state.optionList || !state.video || !state.still) {
+      return;
+    }
+
+    const change = changes[Math.floor(Math.random() * changes.length)];
+    state.currentChange = change;
+
+    state.video.pause();
+    state.video.hidden = true;
+    state.video.currentTime = 0;
+
+    state.still.src = change.still;
+    state.still.alt = change.alt;
+    state.still.hidden = false;
+
+    populateOptions(change);
+    setChecklistEnabled(true);
+    if (state.observeButton) {
+      state.observeButton.disabled = false;
+    }
+    setMessage('Select the detail that changed from the list.');
+  }
+
+  function populateOptions(change) {
+    if (!state.optionList) {
+      return;
+    }
+
+    state.optionList.innerHTML = '';
+
+    change.options.forEach((label, index) => {
+      const optionId = `${change.id}-option-${index}`;
+      const listItem = document.createElement('li');
+      const checkbox = document.createElement('input');
+      checkbox.type = 'checkbox';
+      checkbox.id = optionId;
+      checkbox.name = 'porthole-option';
+      checkbox.value = String(index);
+      checkbox.dataset.correct = index === change.correctIndex ? 'true' : 'false';
+
+      const labelNode = document.createElement('label');
+      labelNode.setAttribute('for', optionId);
+      labelNode.textContent = label;
+
+      listItem.appendChild(checkbox);
+      listItem.appendChild(labelNode);
+      state.optionList.appendChild(listItem);
     });
   }
 
-  function countFound() {
-    return differences.reduce((total, diff) => (diff.found ? total + 1 : total), 0);
-  }
-
-  function updateProgress() {
-    const total = differences.length;
-    const foundCount = countFound();
-
-    if (state.progressCount) {
-      state.progressCount.textContent = String(foundCount);
+  function handleOptionSelection(event) {
+    const target = event.target;
+    if (!(target instanceof HTMLInputElement) || target.type !== 'checkbox') {
+      return;
     }
 
-    if (state.totalCount) {
-      state.totalCount.textContent = String(total);
+    if (state.fieldset && state.fieldset.disabled) {
+      target.checked = false;
+      return;
     }
 
-    if (state.progressMessage) {
-      let message = progressMessages.start;
-      if (foundCount === total && total > 0) {
-        message = progressMessages.complete;
-      } else if (foundCount > 0) {
-        message = progressMessages.mid;
+    if (!state.optionList) {
+      return;
+    }
+
+    const checkboxes = state.optionList.querySelectorAll("input[type='checkbox']");
+    checkboxes.forEach(box => {
+      if (box !== target) {
+        box.checked = false;
       }
-      state.progressMessage.textContent = message;
-    }
+    });
 
-    if (foundCount === total && total > 0) {
+    if (target.dataset.correct === 'true') {
       showSuccess();
+      setMessage('Change confirmed. Signal ready to transmit.');
     } else {
       hideSuccess();
+      setMessage('That detail matches the baseline feed. Try another option.');
+    }
+  }
+
+  function setChecklistEnabled(enabled) {
+    if (state.fieldset) {
+      state.fieldset.disabled = !enabled;
+    }
+  }
+
+  function clearOptions() {
+    if (state.optionList) {
+      state.optionList.innerHTML = '';
+    }
+  }
+
+  function setMessage(message) {
+    if (state.progressMessage) {
+      state.progressMessage.textContent = message;
     }
   }
 
@@ -192,7 +240,7 @@
     if (state.successBanner) {
       state.successBanner.classList.remove('visible');
     }
-    if (state.keywordNode && !countFound()) {
+    if (state.keywordNode) {
       state.keywordNode.textContent = '';
     }
     if (global.SubControls && typeof global.SubControls.clearKeywordBanner === 'function') {
@@ -200,30 +248,29 @@
     }
   }
 
-  function handleMarkerClick(event) {
-    const target = event.currentTarget;
-    if (!target) {
-      return;
-    }
-
-    const diffId = target.dataset.differenceId;
-    const diff = diffId ? differenceMap.get(diffId) : null;
-    if (!diff) {
-      return;
-    }
-
-    diff.found = !diff.found;
-    setMarkerState(diff.id, diff.found);
-    updateProgress();
-  }
-
   function resetState() {
-    differences.forEach(diff => {
-      diff.found = false;
-      setMarkerState(diff.id, false);
-    });
     hideSuccess();
-    updateProgress();
+    state.currentChange = null;
+    setMessage('Press Observe to review the live feed.');
+
+    if (state.video) {
+      state.video.pause();
+      state.video.currentTime = 0;
+      state.video.hidden = false;
+    }
+
+    if (state.still) {
+      state.still.hidden = true;
+      state.still.removeAttribute('src');
+      state.still.setAttribute('alt', 'Still frame awaiting observation');
+    }
+
+    clearOptions();
+    setChecklistEnabled(false);
+
+    if (state.observeButton) {
+      state.observeButton.disabled = false;
+    }
   }
 
   function preparePuzzle() {
@@ -231,11 +278,7 @@
       return false;
     }
 
-    if (!state.initialised) {
-      buildMarkers();
-      state.initialised = true;
-    }
-
+    bindEvents();
     return true;
   }
 
@@ -243,6 +286,7 @@
     if (!preparePuzzle()) {
       return;
     }
+
     resetState();
   }
 
@@ -250,6 +294,7 @@
     if (!preparePuzzle()) {
       return;
     }
+
     resetState();
   }
 
@@ -258,12 +303,16 @@
       return;
     }
 
-    differences.forEach(diff => {
-      diff.found = true;
-      setMarkerState(diff.id, true);
-    });
+    if (!state.currentChange) {
+      displayRandomChange();
+    }
 
-    updateProgress();
+    const correctOption = state.optionList.querySelector("input[data-correct='true']");
+    if (correctOption) {
+      correctOption.checked = true;
+      showSuccess();
+      setMessage('Change confirmed. Signal ready to transmit.');
+    }
   }
 
   global.initializePortholePuzzle = initialisePuzzle;

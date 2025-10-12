@@ -1,22 +1,23 @@
 const { test, expect } = require('@playwright/test');
 
-test('porthole puzzle reveals keyword after marking all differences', async ({ page }) => {
+test('porthole puzzle reveals keyword after logging the correct change', async ({ page }) => {
   await page.goto('/');
   await page.click('nav .tab[data-target="spot-diff"]');
 
-  await page.waitForSelector('.difference-marker');
+  await page.click('#porthole-observe-button');
 
-  const differenceIds = await page.evaluate(() => {
-    return Array.from(
-      new Set(
-        Array.from(document.querySelectorAll('.difference-marker')).map(el => el.dataset.differenceId)
-      )
-    ).filter(Boolean);
+  await page.evaluate(() => {
+    const video = document.querySelector('#porthole-video');
+    if (video) {
+      video.pause();
+      video.dispatchEvent(new Event('ended'));
+    }
   });
 
-  for (const id of differenceIds) {
-    await page.locator(`.difference-marker[data-difference-id="${id}"]`).first().click();
-  }
+  await page.waitForSelector('#porthole-option-list li');
+  const correctOption = page.locator("#porthole-option-list input[data-correct='true']");
+  await expect(correctOption).toHaveCount(1);
+  await correctOption.check();
 
   const successBanner = page.locator('#porthole-success');
   await expect(successBanner).toHaveClass(/visible/);
