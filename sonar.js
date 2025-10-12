@@ -107,14 +107,15 @@
   }
 
   function normaliseRandom(raw) {
-    if (!Number.isFinite(raw)) {
-      return Math.random();
+    if (app && typeof app.normaliseRandom === 'function') {
+      return app.normaliseRandom(raw);
     }
-    const fractional = raw % 1;
-    if (fractional === 0 && raw !== 0) {
-      return 0;
+
+    if (global.SubControls && typeof global.SubControls.normaliseRandom === 'function') {
+      return global.SubControls.normaliseRandom(raw);
     }
-    return fractional < 0 ? fractional + 1 : fractional;
+
+    throw new Error('SubControls.normaliseRandom is required for sonar generation.');
   }
 
   function getActiveKeyword() {

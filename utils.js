@@ -91,6 +91,19 @@
     });
   }
 
+  function normaliseRandom(raw) {
+    if (!Number.isFinite(raw)) {
+      return Math.random();
+    }
+
+    const fractional = raw % 1;
+    if (fractional === 0 && raw !== 0) {
+      return 0;
+    }
+
+    return fractional < 0 ? fractional + 1 : fractional;
+  }
+
   function registerPuzzle(id, handlers) {
     if (!id) {
       throw new Error('Puzzle id is required when registering a puzzle.');
@@ -286,6 +299,7 @@
   });
 
   const api = {
+    normaliseRandom,
     registerPuzzle,
     resetAllPuzzles,
     revealAllSolutions,

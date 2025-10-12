@@ -1,7 +1,10 @@
 (function (global) {
   const KEYWORD = 'PERISCOPE';
 
+  let hooksRegistered = false;
   const changes = [
+
+
     {
       id: 'change1',
       still: 'change1.webp',
@@ -319,8 +322,17 @@
   global.resetPortholePuzzle = resetPuzzle;
   global.revealPortholeSolution = revealPuzzle;
 
-  if (global.SubControls) {
+  function registerSubControlsHooks() {
+    if (hooksRegistered) {
+      return;
+    }
+
     const sc = global.SubControls;
+    if (!sc) {
+      return;
+    }
+
+    hooksRegistered = true;
 
     if (typeof sc.unregisterResetHook === 'function' && sc.__portholeResetHook) {
       sc.unregisterResetHook(sc.__portholeResetHook);
@@ -337,5 +349,11 @@
       sc.__portholeRevealHook = revealPuzzle;
       sc.registerRevealHook(revealPuzzle);
     }
+  }
+
+  registerSubControlsHooks();
+
+  if (global.document && typeof global.document.addEventListener === 'function') {
+    global.document.addEventListener('DOMContentLoaded', registerSubControlsHooks);
   }
 })(window);
