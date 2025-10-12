@@ -34,16 +34,11 @@
     keywordFactory: null,
   };
 
-  function normaliseRandom(raw) {
-    if (!Number.isFinite(raw)) {
-      return Math.random();
-    }
-    const fractional = raw % 1;
-    if (fractional === 0 && raw !== 0) {
-      return 0;
-    }
-    return fractional < 0 ? fractional + 1 : fractional;
+  if (typeof app.normaliseRandom !== 'function') {
+    throw new Error('SubControls.normaliseRandom is required for control unlock generation.');
   }
+
+  const normaliseRandom = app.normaliseRandom;
 
   function getRng() {
     return typeof generationOverrides.rng === 'function' ? generationOverrides.rng : Math.random;
