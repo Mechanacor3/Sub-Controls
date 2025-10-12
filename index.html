@@ -48,7 +48,7 @@
           <option value="verified">Verified ✅</option>
         </select>
         <p class="admin-description">
-          <strong>Keyword:</strong> PERISCOPE — fires when every mismatch between the twin windows has been flagged.
+          <strong>Keyword:</strong> PERISCOPE — fires when the correct anomaly from the still frame is logged after review.
         </p>
       </div>
       <div class="admin-task">
@@ -102,7 +102,7 @@
         </article>
         <article class="task-card">
           <h3><span class="task-emoji" aria-hidden="true">🔍</span> Porthole Puzzle</h3>
-          <p>Study the twin observation windows and mark every difference the lookouts missed.</p>
+          <p>Watch the baseline porthole feed and log the anomaly that appears in the follow-up still frame.</p>
           <a href="#spot-diff" class="task-link" data-target="spot-diff">Inspect the Portholes</a>
         </article>
         <article class="task-card">
@@ -139,56 +139,43 @@
         <div class="porthole-intro">
           <h2>🔍 Porthole Puzzle</h2>
           <p>
-            Two observation windows show the sea outside the submarine. Study the port and starboard scenes,
-            then tap every mismatch to flag it for the crew.
+            Study the baseline feed, then log the detail that shifts when the still frame appears. Tag the true
+            change to help the bridge track anomalies.
           </p>
+          <button type="button" class="porthole-observe-button" id="porthole-observe-button">
+            Observe
+          </button>
         </div>
-        <div class="porthole-scenes">
-          <div class="porthole-scene" data-scene="port">
-            <div class="porthole-frame">
-              <div class="porthole-glass" role="img" aria-label="Port observation porthole">
-                <div class="scene-detail hull"></div>
-                <div class="scene-detail tower"></div>
-                <div class="scene-detail viewport viewport-a"></div>
-                <div class="scene-detail viewport viewport-b"></div>
-                <div class="scene-detail viewport viewport-c"></div>
-                <div class="scene-detail buoy"></div>
-                <div class="scene-detail kelp kelp-port"></div>
-                <div class="scene-detail kelp kelp-starboard"></div>
-                <div class="scene-detail jellyfish"></div>
-                <div class="scene-detail sonar"></div>
-                <div class="scene-detail bubbles cluster-one"></div>
-                <div class="scene-detail bubbles cluster-two"></div>
-              </div>
-            </div>
-            <div class="porthole-label">Port Observation</div>
-          </div>
-          <div class="porthole-scene" data-scene="starboard">
-            <div class="porthole-frame">
-              <div class="porthole-glass" role="img" aria-label="Starboard observation porthole">
-                <div class="scene-detail hull"></div>
-                <div class="scene-detail tower"></div>
-                <div class="scene-detail viewport viewport-a"></div>
-                <div class="scene-detail viewport viewport-b"></div>
-                <div class="scene-detail viewport viewport-c"></div>
-                <div class="scene-detail buoy"></div>
-                <div class="scene-detail kelp kelp-port"></div>
-                <div class="scene-detail kelp kelp-starboard"></div>
-                <div class="scene-detail jellyfish"></div>
-                <div class="scene-detail sonar"></div>
-                <div class="scene-detail bubbles cluster-one"></div>
-                <div class="scene-detail bubbles cluster-two"></div>
-              </div>
-            </div>
-            <div class="porthole-label">Starboard Observation</div>
-          </div>
+        <div class="porthole-viewer">
+          <video
+            id="porthole-video"
+            class="porthole-video"
+            src="bubbles.mp4"
+            preload="auto"
+            playsinline
+            aria-label="Baseline porthole observation feed"
+          ></video>
+          <img
+            id="porthole-still"
+            class="porthole-still"
+            src=""
+            alt="Still frame awaiting observation"
+            hidden
+          />
         </div>
         <div class="porthole-progress" role="status" aria-live="polite">
-          Found <span id="porthole-found-count">0</span> of <span id="porthole-total-count">0</span> differences ·
-          <span class="porthole-progress-message" id="porthole-progress-message">Mark each mismatch to light the signal.</span>
+          <span class="porthole-progress-message" id="porthole-progress-message">
+            Press Observe to review the live feed.
+          </span>
         </div>
+        <form class="porthole-checklist" id="porthole-checklist" aria-live="polite">
+          <fieldset>
+            <legend>Log the detected change</legend>
+            <ul class="porthole-option-list" id="porthole-option-list"></ul>
+          </fieldset>
+        </form>
         <div class="porthole-success" id="porthole-success" aria-live="assertive">
-          <p>All differences spotted! Keyword:</p>
+          <p>Correct change logged! Keyword:</p>
           <p class="porthole-keyword" id="porthole-keyword"></p>
         </div>
       </div>
