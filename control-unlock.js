@@ -370,38 +370,6 @@
     resetPuzzle();
   }
 
-  function ensurePortholeHooks() {
-    document.addEventListener('DOMContentLoaded', () => {
-      if (typeof window.initializePortholePuzzle === 'function') {
-        window.initializePortholePuzzle();
-      }
-    });
-
-    if (typeof app.registerResetHook === 'function') {
-      if (!app.__portholeResetHook) {
-        app.__portholeResetHook = () => {
-          if (typeof window.resetPortholePuzzle === 'function') {
-            window.resetPortholePuzzle();
-          }
-        };
-      }
-      app.registerResetHook(app.__portholeResetHook);
-    }
-
-    if (typeof app.registerRevealHook === 'function') {
-      if (!app.__portholeRevealHook) {
-        app.__portholeRevealHook = () => {
-          if (typeof window.revealPortholeSolution === 'function') {
-            window.revealPortholeSolution();
-          }
-        };
-      }
-      app.registerRevealHook(app.__portholeRevealHook);
-    }
-  }
-
-  ensurePortholeHooks();
-
   app.registerPuzzle('control-unlock', {
     init: initPuzzle,
     reset: resetPuzzle,
