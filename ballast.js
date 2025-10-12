@@ -3,14 +3,14 @@
     return;
   }
 
-  const BALLAST_OFFSET_BASE = 2;
-  const BALLAST_OFFSET_MIN = -2;
-  const BALLAST_OFFSET_MAX = 2;
+  const BALLAST_OFFSET_BASE = 1;
+  const BALLAST_OFFSET_MIN = -1;
+  const BALLAST_OFFSET_MAX = 1;
 
   const ballastConfig = {
-    baseTilt: -10,
-    baseDepth: -8,
-    maxMoves: 7,
+    baseTilt: 2,
+    baseDepth: 6,
+    maxMoves: 5,
     gaugeRange: 18,
     gaugeDegrees: 65,
     keyword: 'TRIM',
@@ -139,7 +139,8 @@
         const config = ballastLevers.find(lever => lever.id === leverId);
         if (!config) return null;
         const valueDisplay = wrapper.querySelector('.lever-value');
-        return { slider, valueDisplay, config };
+        const hintDisplay = wrapper.querySelector('.lever-hint');
+        return { slider, valueDisplay, hintDisplay, config };
       })
       .filter(Boolean);
 
@@ -149,6 +150,8 @@
         showPendingBallastMessage();
       });
     });
+
+    updateLeverHints();
 
     ballastElements.toggleButton?.addEventListener('click', toggleBallastPolarity);
     ballastElements.confirmButton?.addEventListener('click', commitBallastAdjustment);
@@ -212,8 +215,43 @@
     ballastElements.levers.forEach(({ slider, valueDisplay }) => {
       if (!valueDisplay) return;
       const offset = sliderValueToOffset(slider.value);
-      valueDisplay.textContent = offset > 0 ? `+${offset}` : `${offset}`;
+      if (offset === 0) {
+        valueDisplay.textContent = 'Neutral';
+        return;
+      }
+
+      const direction = offset > 0 ? 'Flood' : 'Vent';
+      const formatted = offset > 0 ? `+${offset}` : `${offset}`;
+      valueDisplay.textContent = `${direction} ${formatted}`;
     });
+  }
+
+  function updateLeverHints() {
+    ballastElements.levers.forEach(({ hintDisplay, config }) => {
+      if (!hintDisplay) return;
+      hintDisplay.textContent = describeLeverEffect(config);
+    });
+  }
+
+  function describeLeverEffect(config) {
+    const parts = [];
+
+    if (config.tilt === 0) {
+      parts.push('keeps trim level');
+    } else {
+      const tiltDirection = config.tilt > 0 ? 'starboard' : 'port';
+      parts.push(`lists ${Math.abs(config.tilt)}° to the ${tiltDirection}`);
+    }
+
+    if (config.depth === 0) {
+      parts.push('holds depth steady');
+    } else {
+      const depthDirection = config.depth > 0 ? 'sinks' : 'rises';
+      parts.push(`${depthDirection} ${Math.abs(config.depth)}m`);
+    }
+
+    const effect = parts.join(' and ');
+    return `Flooding ${effect} per notch. Venting reverses the effect.`;
   }
 
   function showPendingBallastMessage() {
